@@ -1,0 +1,10 @@
+apiVersion: api.edb-operator.com/v1alpha1
+kind: MySQLDatabase
+metadata:
+  name: example
+spec:
+  name: example
+  owner: example
+  externalDatabaseRef:
+    name: external-db
+    namespace: default

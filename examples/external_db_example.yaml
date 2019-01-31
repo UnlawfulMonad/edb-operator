@@ -1,0 +1,10 @@
+---
+apiVersion: api.edb-operator.com/v1alpha1
+kind: ExternalDatabase
+metadata:
+  name: external-db
+spec:
+  host: "mysql.default:3306"
+  adminUser: "root"
+  adminPasswordRef:
+    name: edb-mysql-root-password
