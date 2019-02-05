@@ -18,6 +18,7 @@ type ExternalDatabaseSpec struct {
 	AdminUser     string                 `json:"adminUser"`
 	AdminPassword corev1.SecretReference `json:"adminPasswordRef"`
 	Type          DatabaseType           `json:"type"`
+	Selector      *metav1.LabelSelector  `json:"namespaceSelector"`
 }
 
 type ExternalDatabaseReference struct {

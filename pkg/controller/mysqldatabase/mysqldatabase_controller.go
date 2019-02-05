@@ -3,11 +3,13 @@ package mysqldatabase
 import (
 	"context"
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
+	"k8s.io/apimachinery/pkg/types"
 	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -91,14 +93,40 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
+
 	dbi := edb.LookupExternalDatabase(db.Spec.ExternalDatabaseRef.Name, db.Spec.ExternalDatabaseRef.Namespace)
 	if dbi == nil {
 		return reconcile.Result{RequeueAfter: time.Second * 10}, errors.NewBadRequest("external database specified doesn't exist")
 	}
 
-	err = dbi.CreateDB(db.Spec.Name, db.Spec.Owner)
+	ext := &apiv1alpha1.ExternalDatabase{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: db.Spec.ExternalDatabaseRef.Name, Namespace: db.Spec.ExternalDatabaseRef.Namespace}, ext)
 	if err != nil {
-		return reconcile.Result{RequeueAfter: time.Second * 30}, err
+		return reconcile.Result{}, err
+	}
+
+	selector := labels.Set(ext.Spec.Selector.MatchLabels).AsSelector()
+
+	nsls := &corev1.NamespaceList{}
+	listOptions := &client.ListOptions{LabelSelector: selector}
+	err = r.client.List(context.TODO(), listOptions, nsls)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	isValidNs := false
+	for _, ns := range nsls.Items {
+		if ns.Name == db.Namespace {
+			isValidNs = true
+			break
+		}
+	}
+
+	if isValidNs {
+		err = dbi.CreateDB(db.Spec.Name, db.Spec.Owner)
+		if err != nil {
+			return reconcile.Result{RequeueAfter: time.Second * 30}, err
+		}
 	}
 
 	return reconcile.Result{}, nil

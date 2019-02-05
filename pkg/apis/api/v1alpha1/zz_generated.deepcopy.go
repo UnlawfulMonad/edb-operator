@@ -21,7 +21,8 @@ limitations under the License.
 package v1alpha1
 
 import (
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -30,7 +31,7 @@ func (in *ExternalDatabase) DeepCopyInto(out *ExternalDatabase) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
 	in.ObjectMeta.DeepCopyInto(&out.ObjectMeta)
-	out.Spec = in.Spec
+	in.Spec.DeepCopyInto(&out.Spec)
 	out.Status = in.Status
 	return
 }
@@ -106,6 +107,11 @@ func (in *ExternalDatabaseReference) DeepCopy() *ExternalDatabaseReference {
 func (in *ExternalDatabaseSpec) DeepCopyInto(out *ExternalDatabaseSpec) {
 	*out = *in
 	out.AdminPassword = in.AdminPassword
+	if in.Selector != nil {
+		in, out := &in.Selector, &out.Selector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 
@@ -300,7 +306,7 @@ func (in *MySQLUserSpec) DeepCopyInto(out *MySQLUserSpec) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(v1.SecretKeySelector)
+		*out = new(corev1.SecretKeySelector)
 		(*in).DeepCopyInto(*out)
 	}
 	return
@@ -321,7 +327,7 @@ func (in *MySQLUserStatus) DeepCopyInto(out *MySQLUserStatus) {
 	*out = *in
 	if in.PasswordSecretName != nil {
 		in, out := &in.PasswordSecretName, &out.PasswordSecretName
-		*out = new(v1.SecretKeySelector)
+		*out = new(corev1.SecretKeySelector)
 		(*in).DeepCopyInto(*out)
 	}
 	return
