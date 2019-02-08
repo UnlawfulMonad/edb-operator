@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:315ee4e58738f41b338a701e8acb4e991f6d30737c2ae757d2087a1d28d72810"
+  digest = "1:2173c429b0c4654deb4f3e8d1f503c374f93a6b5549d74f9cba797c1e787f8e4"
   name = "cloud.google.com/go"
   packages = ["compute/metadata"]
   pruneopts = "NT"
-  revision = "28a4bc8c44b3acbcc482cff0cdf7de29a4688b61"
-  version = "v0.35.1"
+  revision = "c9474f2f8deb81759839474b6bd1726bbfe1c1c4"
+  version = "v0.36.0"
 
 [[projects]]
   digest = "1:d8ebbd207f3d3266d4423ce4860c9f3794956306ded6c7ba312ecc69cdfbf04c"
@@ -208,14 +208,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:97972f03fbf34ec4247ddc78ddb681389c468c020492aa32b109744a54fc0c14"
+  digest = "1:edf177373f563957f575f757cff0fb10c9d431926af210410d83f9aecfb91629"
   name = "github.com/gregjones/httpcache"
   packages = [
     ".",
     "diskcache",
   ]
   pruneopts = "NT"
-  revision = "c63ab54fda8f77302f8d414e19933f2b6026a089"
+  revision = "7a902570cb17174de4ac788094f8ebedec136f57"
 
 [[projects]]
   digest = "1:b42cde0e1f3c816dd57f57f7bbcf05ca40263ad96f168714c130c611fc0856a6"
@@ -289,8 +289,7 @@
   version = "1.0.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:8522742c2b8b64217ab43cdd3ae0615f9a89ddb2f02729c613bb2e1347ba2a2c"
+  digest = "1:c7b6faf294d8ef95f74c0467df72b8ffa103935462df294a9e7bc1d416a9f4d5"
   name = "github.com/operator-framework/operator-sdk"
   packages = [
     "pkg/k8sutil",
@@ -299,7 +298,8 @@
     "version",
   ]
   pruneopts = "NT"
-  revision = "43d37ce8582699ca9b60d2ee94bff42387df1c69"
+  revision = "8e3c20e730c364f75ddc454acec79e981bb819dd"
+  version = "v0.4.1"
 
 [[projects]]
   digest = "1:93b1d84c5fa6d1ea52f4114c37714cddd84d5b78f151b62bb101128dd51399bf"
@@ -359,7 +359,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:753d988fc383cc61173d5afdf94a149b853c75d399dafacfd93ba5b734e06044"
+  digest = "1:ba67129924aa2bcefe3d20da7f01bc62071d8330ab99f166861afe23252ae4ba"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -368,7 +368,7 @@
     "xfs",
   ]
   pruneopts = "NT"
-  revision = "316cf8ccfec56d206735d46333ca162eb374da8b"
+  revision = "de1b801bf34b80cd00f14087dc5a994bfe0296bc"
 
 [[projects]]
   digest = "1:9d8420bbf131d1618bde6530af37c3799340d3762cc47210c1d9532a4c3a2779"
@@ -411,15 +411,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:23e299b9877c8592668486c61668132f954875f29633269874c592c3ea94ee92"
+  digest = "1:2a3cccb66fafc79f2010b796020701982aba1a3b1f2205018b272d79902c904c"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "NT"
-  revision = "ccddf3741a0cfcee0a62d34c18c2c5417a3761af"
+  revision = "193df9c0f06f8bb35fba505183eaf0acc0136505"
 
 [[projects]]
   branch = "master"
-  digest = "1:4010b78f0ab4fcc3ff81e30e6dba92fa68b8520df8dd21b393481fd791360b21"
+  digest = "1:9bab7b5f4a6e7fa7a6326c7d7c77e47bf1c9bbf967be1d2b9fe240dcf9375f60"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -430,7 +430,7 @@
     "idna",
   ]
   pruneopts = "NT"
-  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
+  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
 
 [[projects]]
   branch = "master"
@@ -448,14 +448,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:680783030e10a31a8c2deb6f0860f13878295b5458908f4395868e1dbbfe6a87"
+  digest = "1:3bb5c31099b2b50143828828b5601bb7949d51235a35a194db6778e0d252f519"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "NT"
-  revision = "302c3dd5f1cc82baae8e44d9c3178e89b6e2b345"
+  revision = "41f3e6584952bb034a481797859f6ab34b6803bd"
 
 [[projects]]
   digest = "1:8c74f97396ed63cc2ef04ebb5fc37bb032871b8fd890a25991ed40974b00cd2a"
@@ -491,7 +491,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:387937d01b585264ddcb3cc6b2dbb22191a6ffec8ed96093972e9d5f1edd9860"
+  digest = "1:0678cc99a6bf73dd19c559f354dfff6beaf62932ad79c52ca89a5c41bed94f4b"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -508,7 +508,7 @@
     "internal/semver",
   ]
   pruneopts = "NT"
-  revision = "a06a922acc1b97001c51689385e2144227c9e820"
+  revision = "a3f91d6be4f3f5e50038dad5daba2c8e042146c3"
 
 [[projects]]
   digest = "1:902ffa11f1d8c19c12b05cabffe69e1a16608ad03a8899ebcb9c6bde295660ae"
@@ -831,6 +831,7 @@
     "k8s.io/api/core/v1",
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
+    "k8s.io/apimachinery/pkg/labels",
     "k8s.io/apimachinery/pkg/runtime",
     "k8s.io/apimachinery/pkg/runtime/schema",
     "k8s.io/apimachinery/pkg/types",
