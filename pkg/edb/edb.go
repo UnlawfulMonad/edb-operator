@@ -16,7 +16,7 @@ type ExternalDB interface {
 
 var (
 	externalDatabasesMutex = &sync.Mutex{}
-	externalDatabases      = map[string]ExternalDB{}
+	externalDatabases      = make(map[string]ExternalDB)
 )
 
 func LookupExternalDatabase(name, namespace string) ExternalDB {
