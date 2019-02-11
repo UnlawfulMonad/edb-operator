@@ -126,6 +126,14 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 }
 
 func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error {
+	s := &corev1.Secret{}
+	err := r.client.Get(context.TODO(), types.NamespacedName{Name: user.Name + "-db-secret", Namespace: user.Namespace}, s)
+	if err != nil && errors.IsNotFound(err) {
+		return nil
+	} else if !errors.IsNotFound(err) {
+		return err
+	}
+
 	length := 32
 	charset := []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
