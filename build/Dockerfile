@@ -8,7 +8,9 @@ ENV OPERATOR=/usr/local/bin/edb-operator \
 COPY build/_output/bin/edb-operator ${OPERATOR}
 
 COPY build/bin /usr/local/bin
-RUN  /usr/local/bin/user_setup
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    /usr/local/bin/user_setup
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 

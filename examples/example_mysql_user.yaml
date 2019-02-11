@@ -5,6 +5,7 @@ metadata:
 spec:
   name: example
   host: '%'
+  forcePasswordUpdate: false
   externalDatabaseRef:
     name: external-db
     namespace: default

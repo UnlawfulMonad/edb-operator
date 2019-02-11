@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	"k8s.io/apimachinery/pkg/types"
+	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -95,7 +96,23 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 
 	db := edb.LookupExternalDatabase(user.Spec.ExternalDatabaseRef.Name, user.Spec.ExternalDatabaseRef.Namespace)
 	if db == nil {
-		return reconcile.Result{}, errors.NewBadRequest("external database specified doesn't exist")
+		return reconcile.Result{RequeueAfter: time.Second * 30}, errors.NewBadRequest("external database specified doesn't exist")
+	}
+
+	ext := &apiv1alpha1.ExternalDatabase{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: user.Spec.ExternalDatabaseRef.Name, Namespace: user.Spec.ExternalDatabaseRef.Namespace}, ext)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	validNs, err := edb.CanUseDB(r.client, user.Namespace, ext)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	if !validNs {
+		reqLogger.Info("Could not find valid ExternalDatabase")
+		return reconcile.Result{Requeue: true, RequeueAfter: time.Second * 15}, nil
 	}
 
 	// Generate the password if it doesn't already exist
@@ -112,7 +129,10 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	}
 
 	secret := &corev1.Secret{}
-	if err := r.client.Get(context.TODO(), types.NamespacedName{Name: user.Status.PasswordSecretName.Name, Namespace: user.Namespace}, secret); err != nil {
+	if err := r.client.Get(context.TODO(),
+		types.NamespacedName{Name: user.Status.PasswordSecretName.Name, Namespace: user.Namespace},
+		secret);
+	err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -128,10 +148,8 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error {
 	s := &corev1.Secret{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: user.Name + "-db-secret", Namespace: user.Namespace}, s)
-	if err != nil && errors.IsNotFound(err) {
-		return nil
-	} else if !errors.IsNotFound(err) {
-		return err
+	if err != nil && !errors.IsNotFound(err) {
+			return err
 	}
 
 	length := 32

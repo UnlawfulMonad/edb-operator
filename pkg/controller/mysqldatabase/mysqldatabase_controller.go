@@ -9,7 +9,6 @@ import (
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -96,7 +95,7 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 
 	dbi := edb.LookupExternalDatabase(db.Spec.ExternalDatabaseRef.Name, db.Spec.ExternalDatabaseRef.Namespace)
 	if dbi == nil {
-		return reconcile.Result{RequeueAfter: time.Second * 10}, errors.NewBadRequest("external database specified doesn't exist")
+		return reconcile.Result{RequeueAfter: time.Second * 30}, errors.NewBadRequest("external database specified doesn't exist")
 	}
 
 	ext := &apiv1alpha1.ExternalDatabase{}
@@ -105,25 +104,12 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
-	selector := labels.Set(ext.Spec.Selector.MatchLabels).AsSelector()
-
-	nsls := &corev1.NamespaceList{}
-	listOptions := &client.ListOptions{LabelSelector: selector}
-	err = r.client.List(context.TODO(), listOptions, nsls)
+	valid, err := edb.CanUseDB(r.client, db.Namespace, ext)
 	if err != nil {
-		return reconcile.Result{}, err
+		return reconcile.Result{RequeueAfter: time.Second * 30}, err
 	}
 
-	isValidNs := false
-	for _, ns := range nsls.Items {
-		// Check if the database is one of the namespaces that the ExternalDB covers
-		if ns.Name == db.Namespace {
-			isValidNs = true
-			break
-		}
-	}
-
-	if isValidNs {
+	if valid {
 		err = dbi.CreateDB(db.Spec.Name, db.Spec.Owner)
 		if err != nil {
 			return reconcile.Result{RequeueAfter: time.Second * 30}, err

@@ -15,14 +15,9 @@ spec:
     openAPIV3Schema:
       properties:
         spec:
-          required:
-            - name
-            - host
-            - externalDatabaseRef
           properties:
             name: { type: string }
             host: { type: string }
             externalDatabaseRef: { type: object }
-            forcePasswordUpdate: { type: bool }
   subresources:
     status: {}
