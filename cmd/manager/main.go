@@ -11,7 +11,6 @@ import (
 	"github.com/UnlawfulMonad/edb-operator/pkg/controller"
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
-	"github.com/operator-framework/operator-sdk/pkg/metrics"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
@@ -91,10 +90,10 @@ func main() {
 	}
 
 	// Create Service object to expose the metrics port.
-	_, err = metrics.ExposeMetricsPort(ctx, metricsPort)
-	if err != nil {
-		log.Info(err.Error())
-	}
+	//_, err = metrics.ExposeMetricsPort(ctx, metricsPort)
+	//if err != nil {
+	//	log.Info(err.Error())
+	//}
 
 	log.Info("Starting the Cmd.")
 

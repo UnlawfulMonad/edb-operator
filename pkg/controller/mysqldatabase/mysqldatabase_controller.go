@@ -116,6 +116,7 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 
 	isValidNs := false
 	for _, ns := range nsls.Items {
+		// Check if the database is one of the namespaces that the ExternalDB covers
 		if ns.Name == db.Namespace {
 			isValidNs = true
 			break

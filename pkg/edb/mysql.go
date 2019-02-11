@@ -6,6 +6,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
+var (
+	ErrInvalidName = errors.NewInternalError(fmt.Errorf("name is invalid"))
+)
+
 type mySqlConn struct {
 	conn *sql.DB
 }
@@ -44,6 +48,10 @@ func (c *mySqlConn) listUsers() ([]string, error) {
 }
 
 func (c *mySqlConn) CreateUser(user, password string) error {
+	if !isValidUsername(user) {
+		return ErrInvalidName
+	}
+
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -60,11 +68,7 @@ func (c *mySqlConn) CreateUser(user, password string) error {
 		return err
 	}
 
-	if !isValidUsername(user) {
-		return errors.NewBadRequest("Usernames may only contain lowercase letters be lowercase")
-	}
-
-	_, err = c.conn.Exec(fmt.Sprintf(`CREATE USER '%s'@'%%' IDENTIFIED BY PASSWORD '%s'`, user, hash))
+	_, err = c.conn.Exec(fmt.Sprintf(`CREATE USER '%s'@'%%' IDENTIFIED BY PASSWORD '%s';`, user, hash))
 	if err != nil {
 		return err
 	}
@@ -83,6 +87,14 @@ func (c *mySqlConn) hashPassword(password string) (string, error) {
 }
 
 func (c *mySqlConn) CreateDB(name, owner string) error {
+	if !isValidUsername(owner) {
+		return ErrInvalidName
+	}
+
+	if !isValidUsername(name) {
+		return ErrInvalidName
+	}
+
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -93,14 +105,6 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		if user == owner {
 			haveUser = true
 		}
-	}
-
-	if !isValidUsername(owner) {
-		return errors.NewBadRequest("Usernames may only contain lowercase letters and numbers")
-	}
-
-	if !isValidUsername(name) {
-		return errors.NewBadRequest("Databases may only contain lowercase letters and numbers")
 	}
 
 	if !haveUser {

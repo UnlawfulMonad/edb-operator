@@ -8,3 +8,4 @@ spec:
   adminUser: "root"
   adminPasswordRef:
     name: edb-mysql-root-password
+  namespaceSelector: {}
