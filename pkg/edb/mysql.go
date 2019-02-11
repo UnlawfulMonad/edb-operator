@@ -63,27 +63,47 @@ func (c *mySqlConn) CreateUser(user, password string) error {
 		}
 	}
 
-	hash, err := c.hashPassword(password)
+	tx, err := c.conn.Begin()
 	if err != nil {
 		return err
 	}
 
-	_, err = c.conn.Exec(fmt.Sprintf(`CREATE USER '%s'@'%%' IDENTIFIED BY PASSWORD '%s';`, user, hash))
+	_, err = tx.Exec("SET @user := ?", user)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("SET @pass := PASSWORD(?)", password)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`SET @sql := CONCAT("CREATE USER", QUOTE(@user), "@'%' IDENTIFIED BY PASSWORD", QUOTE(@pass))`)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`PREPARE createuser FROM @sql`)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`EXECUTE createuser`)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(`DEALLOCATE PREPARE createuser`)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func (c *mySqlConn) hashPassword(password string) (string, error) {
-	row := c.conn.QueryRow("SELECT PASSWORD(?)", password)
-	var hash string
-	if err := row.Scan(&hash); err != nil {
-		return "", err
-	}
-
-	return hash, nil
 }
 
 func (c *mySqlConn) CreateDB(name, owner string) error {

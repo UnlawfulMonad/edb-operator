@@ -140,7 +140,7 @@ func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error
 
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: user.Name + "-secret",
+			Name: user.Name + "-db-secret",
 			Namespace: user.Namespace,
 			Labels: user.ObjectMeta.Labels,
 		},
@@ -160,7 +160,7 @@ func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error
 
 	user.Status.PasswordSecretName = &corev1.SecretKeySelector{
 		LocalObjectReference: corev1.LocalObjectReference{
-			Name: user.Name + "-secret",
+			Name: user.Name + "-db-secret",
 		},
 		Key: "mysql-password",
 	}
