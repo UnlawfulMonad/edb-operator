@@ -11,5 +11,18 @@ spec:
     singular: mysqluser
   scope: Namespaced
   version: v1alpha1
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          required:
+            - name
+            - host
+            - externalDatabaseRef
+          properties:
+            name: { type: string }
+            host: { type: string }
+            externalDatabaseRef: { type: object }
+            forcePasswordUpdate: { type: bool }
   subresources:
     status: {}
