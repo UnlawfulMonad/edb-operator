@@ -10,6 +10,7 @@ type MySQLUserSpec struct {
 	Name                string                     `json:"name"`
 	Host                string                     `json:"host,omitempty"`
 	ExternalDatabaseRef *ExternalDatabaseReference `json:"externalDatabaseRef"`
+	ForcePasswordUpdate bool                       `json:"forcePasswordUpdate"`
 
 	// If this is empty a password will be generated
 	Password *corev1.SecretKeySelector `json:"existingPasswordSecretRef,omitempty"`
