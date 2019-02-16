@@ -19,9 +19,7 @@ var (
 	externalDatabases      = make(map[string]ExternalDB)
 )
 
-func LookupExternalDatabase(name, namespace string) ExternalDB {
-	name = nsString(name, namespace)
-
+func LookupExternalDatabase(name string) ExternalDB {
 	externalDatabasesMutex.Lock()
 	defer externalDatabasesMutex.Unlock()
 
@@ -33,26 +31,20 @@ func LookupExternalDatabase(name, namespace string) ExternalDB {
 	return db
 }
 
-func AddOrUpdateExternalDatabase(name, namespace string, db ExternalDB) {
+func AddOrUpdateExternalDatabase(name string, db ExternalDB) {
 	if db == nil {
 		panic("cannot add a nil ExternalDB. This is probably a bug. Please report it at https://github.com/UnlawfulMonad/edb-operator/issues")
 	}
 
 	externalDatabasesMutex.Lock()
-	externalDatabases[nsString(name, namespace)] = db
+	externalDatabases[name] = db
 	externalDatabasesMutex.Unlock()
 }
 
-func RemoveExternalDatabase(name, namespace string) {
-	name = nsString(name, namespace)
-
+func RemoveExternalDatabase(name string) {
 	externalDatabasesMutex.Lock()
 	delete(externalDatabases, name)
 	externalDatabasesMutex.Unlock()
-}
-
-func nsString(name, namespace string) string {
-	return name + "/" + namespace
 }
 
 var (

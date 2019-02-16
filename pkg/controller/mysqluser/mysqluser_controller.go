@@ -94,13 +94,13 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 		return reconcile.Result{}, err
 	}
 
-	db := edb.LookupExternalDatabase(user.Spec.ExternalDatabaseRef.Name, user.Spec.ExternalDatabaseRef.Namespace)
+	db := edb.LookupExternalDatabase(user.Spec.ExternalDatabaseRef.Name)
 	if db == nil {
 		return reconcile.Result{RequeueAfter: time.Second * 30}, errors.NewBadRequest("external database specified doesn't exist")
 	}
 
 	ext := &apiv1alpha1.ExternalDatabase{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: user.Spec.ExternalDatabaseRef.Name, Namespace: user.Spec.ExternalDatabaseRef.Namespace}, ext)
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: user.Spec.ExternalDatabaseRef.Name}, ext)
 	if err != nil {
 		return reconcile.Result{}, err
 	}

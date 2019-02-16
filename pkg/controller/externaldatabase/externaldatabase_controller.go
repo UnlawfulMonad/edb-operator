@@ -85,7 +85,7 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 			// Request object not found, could have been deleted after reconcile request.
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
 			// Return and don't requeue
-			edb.RemoveExternalDatabase(request.Name, request.Namespace)
+			edb.RemoveExternalDatabase(request.Name)
 			return reconcile.Result{}, nil
 		}
 		// Error reading the object - requeue the request.
@@ -135,6 +135,6 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 	}
 
 	reqLogger.Info("Successfully connected to database")
-	edb.AddOrUpdateExternalDatabase(request.Name, request.Namespace, edbi)
+	edb.AddOrUpdateExternalDatabase(request.Name, edbi)
 	return reconcile.Result{}, nil
 }

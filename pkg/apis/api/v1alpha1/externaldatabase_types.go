@@ -23,7 +23,6 @@ type ExternalDatabaseSpec struct {
 
 type ExternalDatabaseReference struct {
 	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
 }
 
 // ExternalDatabaseStatus defines the observed state of ExternalDatabase

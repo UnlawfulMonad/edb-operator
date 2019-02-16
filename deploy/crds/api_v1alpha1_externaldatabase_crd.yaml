@@ -27,7 +27,7 @@ spec:
               type: string
             adminPasswordRef:
               type: object
-  scope: Namespaced
+  scope: Cluster
   version: v1alpha1
   subresources:
     status: {}

@@ -7,4 +7,3 @@ spec:
   owner: example
   externalDatabaseRef:
     name: external-db
-    namespace: default
