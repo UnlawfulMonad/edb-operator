@@ -105,6 +105,7 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 	if err != nil {
 		if errors.IsNotFound(err) {
 			reqLogger.Info("Could not find secret " + spec.AdminPassword.Namespace + "/" + spec.AdminPassword.Name)
+			return reconcile.Result{Requeue: true}, nil
 		}
 		return reconcile.Result{}, err
 	}
