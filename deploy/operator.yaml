@@ -7,6 +7,11 @@ metadata:
     operator: edb-operator
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       operator: edb-operator
@@ -18,7 +23,6 @@ spec:
       serviceAccountName: edb-operator
       containers:
         - name: edb-operator
-          # Replace this with the built image name
           image: unlawfulmonad/edb-operator:latest
           imagePullPolicy: Always
           command:
