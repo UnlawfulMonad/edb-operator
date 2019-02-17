@@ -10,6 +10,7 @@ import (
 type ExternalDB interface {
 	CreateUser(name, password string) error
 	CreateDB(name, owner string) error
+	SetPassword(name, password string) error
 	Ping() error
 	Close() error
 }

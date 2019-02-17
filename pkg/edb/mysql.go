@@ -106,6 +106,15 @@ func (c *mySqlConn) CreateUser(user, password string) error {
 	return nil
 }
 
+func (c *mySqlConn) SetPassword(user, password string) error {
+	_, err := c.conn.Exec(`UPDATE mysql.user SET Password = PASSWORD(?) WHERE user = ?`, password, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *mySqlConn) CreateDB(name, owner string) error {
 	if !isValidUsername(owner) {
 		return ErrInvalidName
