@@ -116,10 +116,10 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		return err
 	}
 
-
-	//if _, err := c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO %s@'%%'`, name, owner)); err != nil {
-	//	return err
-	//}
+	_, err = c.conn.Exec(`FLUSH PRIVILEGES`)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
