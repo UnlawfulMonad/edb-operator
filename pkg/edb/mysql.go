@@ -85,8 +85,6 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		return ErrInvalidName
 	}
 
-	//_, err = tx.Exec(`INSERT INTO mysql.db (User, Host, Db, Select_priv) VALUES (?, ?, ?, 'Y')`, user, "%")
-
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -108,9 +106,20 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		return err
 	}
 
-	if _, err := c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO %s@'%%'`, name, owner)); err != nil {
+	_, err = c.conn.Exec(
+		`INSERT INTO mysql.db VALUES (?, ?, ?, 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y')`,
+		"%",
+		name,
+		owner)
+
+	if err != nil {
 		return err
 	}
+
+
+	//if _, err := c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO %s@'%%'`, name, owner)); err != nil {
+	//	return err
+	//}
 
 	return nil
 }
