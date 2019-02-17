@@ -48,10 +48,6 @@ func (c *mySqlConn) listUsers() ([]string, error) {
 }
 
 func (c *mySqlConn) CreateUser(user, password string) error {
-	if !isValidUsername(user) {
-		return ErrInvalidName
-	}
-
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -63,42 +59,7 @@ func (c *mySqlConn) CreateUser(user, password string) error {
 		}
 	}
 
-	tx, err := c.conn.Begin()
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec("SET @user := ?", user)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec("SET @pass := PASSWORD(?)", password)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(`SET @sql := CONCAT("CREATE USER", QUOTE(@user), "@'%' IDENTIFIED BY PASSWORD", QUOTE(@pass))`)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(`PREPARE createuser FROM @sql`)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(`EXECUTE createuser`)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(`DEALLOCATE PREPARE createuser`)
-	if err != nil {
-		return err
-	}
-
-	err = tx.Commit()
+	_, err = c.conn.Exec(`INSERT INTO mysql.user(User, Host, Password) VALUES (?, ?, PASSWORD(?))`, user, "%", password)
 	if err != nil {
 		return err
 	}
@@ -123,6 +84,8 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 	if !isValidUsername(name) {
 		return ErrInvalidName
 	}
+
+	//_, err = tx.Exec(`INSERT INTO mysql.db (User, Host, Db, Select_priv) VALUES (?, ?, ?, 'Y')`, user, "%")
 
 	users, err := c.listUsers()
 	if err != nil {
