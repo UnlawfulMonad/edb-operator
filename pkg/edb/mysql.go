@@ -107,7 +107,7 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 	}
 
 	_, err = c.conn.Exec(
-		`INSERT INTO mysql.db VALUES (?, ?, ?, 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y')`,
+		`INSERT IGNORE INTO mysql.db VALUES (?, ?, ?, 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y')`,
 		"%",
 		name,
 		owner)
