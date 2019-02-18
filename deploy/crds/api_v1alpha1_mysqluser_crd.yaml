@@ -12,13 +12,5 @@ spec:
     singular: mysqluser
   scope: Namespaced
   version: v1alpha1
-  validation:
-    openAPIV3Schema:
-      properties:
-        spec:
-          properties:
-            name: { type: string }
-            host: { type: string }
-            externalDatabaseRef: { type: object }
   subresources:
     status: {}
