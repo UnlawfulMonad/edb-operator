@@ -2,9 +2,10 @@ package edb
 
 import (
 	// Import driver
-	_ "github.com/go-sql-driver/mysql"
 	"regexp"
 	"sync"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type ExternalDB interface {
@@ -49,7 +50,7 @@ func RemoveExternalDatabase(name string) {
 }
 
 var (
-	userValidateRegexp = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+	userValidateRegexp = regexp.MustCompile(`^[a-z][a-z0-9]*$`)
 )
 
 func isValidUsername(name string) bool {
