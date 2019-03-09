@@ -106,11 +106,7 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		return err
 	}
 
-	_, err = c.conn.Exec(
-		`INSERT IGNORE INTO mysql.db VALUES (?, ?, ?, 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y')`,
-		"%",
-		name,
-		owner)
+	_, err = c.conn.Exec( fmt.Sprintf(`GRANT ALL ON %s TO %s@'%%'`, name, owner))
 
 	if err != nil {
 		return err
