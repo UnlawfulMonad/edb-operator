@@ -131,6 +131,7 @@ func (c *mySQLConn) CreateDB(name, owner string) error {
 	if err != nil {
 		return err
 	}
+
 	haveDb := false
 	for _, db := range dbs {
 		if db == name {
