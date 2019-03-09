@@ -4,14 +4,13 @@ ENV OPERATOR=/usr/local/bin/edb-operator \
     USER_UID=1001 \
     USER_NAME=edb-operator
 
-# install operator binary
-COPY build/_output/bin/edb-operator ${OPERATOR}
-
 COPY build/bin /usr/local/bin
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     /usr/local/bin/user_setup
 
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
+# install operator binary
+COPY build/_output/bin/edb-operator ${OPERATOR}
 
 USER ${USER_UID}
+ENTRYPOINT ["/usr/local/bin/entrypoint"]

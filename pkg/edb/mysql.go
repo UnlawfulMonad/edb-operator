@@ -11,7 +11,7 @@ var (
 	ErrInvalidName = errors.NewInternalError(fmt.Errorf("name is invalid"))
 )
 
-type mySqlConn struct {
+type mySQLConn struct {
 	conn *sql.DB
 }
 
@@ -23,10 +23,10 @@ func NewMySQL(adminUser, adminPassword, adminHost string) (ExternalDB, error) {
 		return nil, err
 	}
 
-	return &mySqlConn{conn: db}, nil
+	return &mySQLConn{conn: db}, nil
 }
 
-func (c *mySqlConn) listUsers() ([]string, error) {
+func (c *mySQLConn) listUsers() ([]string, error) {
 	users := make([]string, 0)
 
 	rows, err := c.conn.Query("SELECT User FROM mysql.user")
@@ -48,7 +48,7 @@ func (c *mySqlConn) listUsers() ([]string, error) {
 	return users, nil
 }
 
-func (c *mySqlConn) CreateUser(user, password string) error {
+func (c *mySQLConn) CreateUser(user, password string) error {
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -65,10 +65,15 @@ func (c *mySqlConn) CreateUser(user, password string) error {
 		return err
 	}
 
+	_, err = c.conn.Exec(`FLUSH PRIVILEGES`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (c *mySqlConn) SetPassword(user, password string) error {
+func (c *mySQLConn) SetPassword(user, password string) error {
 	_, err := c.conn.Exec(`UPDATE mysql.user SET Password = PASSWORD(?) WHERE user = ?`, password, user)
 	if err != nil {
 		return err
@@ -77,7 +82,7 @@ func (c *mySqlConn) SetPassword(user, password string) error {
 	return nil
 }
 
-func (c *mySqlConn) CreateDB(name, owner string) error {
+func (c *mySQLConn) CreateDB(name, owner string) error {
 	if !isValidUsername(owner) {
 		return ErrInvalidName
 	}
@@ -109,8 +114,8 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 	}
 
 	_, err = c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO '%s'@'%%'`, name, owner))
-
 	if err != nil {
+		//st := StackTrace()
 		return err
 	}
 
@@ -122,11 +127,11 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 	return nil
 }
 
-func (c *mySqlConn) Ping() error {
+func (c *mySQLConn) Ping() error {
 	return c.conn.Ping()
 }
 
-func (c *mySqlConn) Close() error {
+func (c *mySQLConn) Close() error {
 	defer func() { c.conn = nil }()
 	return c.conn.Close()
 }

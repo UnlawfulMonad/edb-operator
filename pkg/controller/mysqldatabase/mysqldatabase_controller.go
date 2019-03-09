@@ -2,9 +2,10 @@ package mysqldatabase
 
 import (
 	"context"
+	"time"
+
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	"k8s.io/apimachinery/pkg/types"
-	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -92,14 +93,13 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
-
 	dbi := edb.LookupExternalDatabase(db.Spec.ExternalDatabaseRef.Name)
 	if dbi == nil {
 		return reconcile.Result{RequeueAfter: time.Second * 30}, errors.NewBadRequest("external database specified doesn't exist")
 	}
 
 	ext := &apiv1alpha1.ExternalDatabase{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{ Name: db.Spec.ExternalDatabaseRef.Name }, ext)
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: db.Spec.ExternalDatabaseRef.Name}, ext)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
@@ -112,6 +112,7 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 	if valid {
 		err = dbi.CreateDB(db.Spec.Name, db.Spec.Owner)
 		if err != nil {
+			reqLogger.Error(err, "failed to create database")
 			return reconcile.Result{RequeueAfter: time.Second * 30}, err
 		}
 	}
