@@ -3,6 +3,7 @@ package edb
 import (
 	"database/sql"
 	"fmt"
+
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
@@ -94,6 +95,7 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 	for _, user := range users {
 		if user == owner {
 			haveUser = true
+			break
 		}
 	}
 
@@ -106,7 +108,7 @@ func (c *mySqlConn) CreateDB(name, owner string) error {
 		return err
 	}
 
-	_, err = c.conn.Exec( fmt.Sprintf(`GRANT ALL ON %s.* TO %s@'%%'`, name, owner))
+	_, err = c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO '%s'@'%%'`, name, owner))
 
 	if err != nil {
 		return err
