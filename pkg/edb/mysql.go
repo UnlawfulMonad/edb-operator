@@ -26,6 +26,27 @@ func NewMySQL(adminUser, adminPassword, adminHost string) (ExternalDB, error) {
 	return &mySQLConn{conn: db}, nil
 }
 
+func (c *mySQLConn) listDatabases() ([]string, error) {
+	dbs := make([]string, 0)
+	rows, err := c.conn.Query("SHOW DATABASES")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var name string
+	for rows.Next() {
+		err = rows.Scan(&name)
+		if err != nil {
+			return nil, err
+		}
+		dbs = append(dbs, name)
+	}
+
+	return dbs, nil
+}
+
 func (c *mySQLConn) listUsers() ([]string, error) {
 	users := make([]string, 0)
 
@@ -65,10 +86,7 @@ func (c *mySQLConn) CreateUser(user, password string) error {
 		return err
 	}
 
-	_, err = c.conn.Exec(`FLUSH PRIVILEGES`)
-	if err != nil {
-		return err
-	}
+	c.flushPrivs()
 
 	return nil
 }
@@ -109,22 +127,41 @@ func (c *mySQLConn) CreateDB(name, owner string) error {
 		return errors.NewServiceUnavailable("user does not exist")
 	}
 
+	dbs, err := c.listDatabases()
+	if err != nil {
+		return err
+	}
+	haveDb := false
+	for _, db := range dbs {
+		if db == name {
+			haveDb = true
+			break
+		}
+	}
+
+	if haveDb {
+		return nil
+	}
+
 	if _, err := c.conn.Exec(fmt.Sprintf(`CREATE DATABASE IF NOT EXISTS %s`, name)); err != nil {
 		return err
 	}
 
 	_, err = c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO '%s'@'%%'`, name, owner))
 	if err != nil {
-		//st := StackTrace()
 		return err
 	}
 
-	_, err = c.conn.Exec(`FLUSH PRIVILEGES`)
-	if err != nil {
-		return err
-	}
+	c.flushPrivs()
 
 	return nil
+}
+
+func (c *mySQLConn) flushPrivs() {
+	_, err := c.conn.Exec(`FLUSH PRIVILEGES`)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (c *mySQLConn) Ping() error {
