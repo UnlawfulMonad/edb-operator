@@ -3,9 +3,10 @@ package mysqluser
 import (
 	"context"
 	"crypto/rand"
+	"time"
+
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	"k8s.io/apimachinery/pkg/types"
-	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -131,8 +132,7 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	secret := &corev1.Secret{}
 	if err := r.client.Get(context.TODO(),
 		types.NamespacedName{Name: user.Status.PasswordSecretName.Name, Namespace: user.Namespace},
-		secret);
-	err != nil {
+		secret); err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -156,7 +156,7 @@ func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error
 	s := &corev1.Secret{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: user.Name + "-db-secret", Namespace: user.Namespace}, s)
 	if err != nil && !errors.IsNotFound(err) {
-			return err
+		return err
 	}
 
 	length := 32
@@ -173,9 +173,9 @@ func (r *ReconcileMySQLUser) generatePassword(user *apiv1alpha1.MySQLUser) error
 
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: user.Name + "-db-secret",
+			Name:      user.Name + "-db-secret",
 			Namespace: user.Namespace,
-			Labels: user.ObjectMeta.Labels,
+			Labels:    user.ObjectMeta.Labels,
 		},
 
 		Data: map[string][]byte{
