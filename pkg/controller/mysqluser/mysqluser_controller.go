@@ -137,13 +137,6 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	}
 
 	password := string(secret.Data[user.Status.PasswordSecretName.Key])
-	if user.Spec.ForcePasswordUpdate {
-		err := db.SetPassword(user.Spec.Name, password)
-		if err != nil {
-			return reconcile.Result{}, err
-		}
-	}
-
 	if err := db.CreateUser(user.Spec.Name, password); err != nil {
 		return reconcile.Result{}, err
 	}
