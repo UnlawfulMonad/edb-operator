@@ -1,0 +1,7 @@
+apiVersion: api.edb-operator.com/v1alpha1
+kind: MySqlUser
+metadata:
+  name: example-mysqluser
+spec:
+  # Add fields here
+  size: 3

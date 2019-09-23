@@ -2,6 +2,7 @@ module github.com/UnlawfulMonad/edb-operator
 
 require (
 	github.com/coreos/prometheus-operator v0.31.1 // indirect
+	github.com/go-openapi/spec v0.17.2
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/lib/pq v1.2.0
 	github.com/operator-framework/operator-sdk v0.10.1-0.20190919225052-3a85983ecc72
@@ -10,7 +11,7 @@ require (
 	k8s.io/api v0.0.0-20190612125737-db0771252981
 	k8s.io/apimachinery v0.0.0-20190612125636-6a5db36e93ad
 	k8s.io/client-go v11.0.1-0.20190409021438-1a26190bd76a+incompatible
-	k8s.io/kube-openapi v0.0.0-20190603182131-db7b694dc208 // indirect
+	k8s.io/kube-openapi v0.0.0-20190603182131-db7b694dc208
 	sigs.k8s.io/controller-runtime v0.2.0
 )
 

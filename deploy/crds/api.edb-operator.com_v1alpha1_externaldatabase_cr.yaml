@@ -1,0 +1,7 @@
+apiVersion: api.edb-operator.com/v1alpha1
+kind: ExternalDatabase
+metadata:
+  name: example-externaldatabase
+spec:
+  # Add fields here
+  size: 3
