@@ -1,5 +1,5 @@
+kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
 metadata:
   name: edb-operator
 rules:
@@ -8,21 +8,14 @@ rules:
   resources:
   - pods
   - services
+  - services/finalizers
   - endpoints
   - persistentvolumeclaims
   - events
   - configmaps
   - secrets
   verbs:
-  - '*'
-- apiGroups:
-  - ""
-  resources:
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
+  - "*"
 - apiGroups:
   - apps
   resources:
@@ -31,19 +24,31 @@ rules:
   - replicasets
   - statefulsets
   verbs:
-  - '*'
+  - "*"
 - apiGroups:
   - monitoring.coreos.com
   resources:
   - servicemonitors
   verbs:
-  - get
-  - create
+  - "get"
+  - "create"
 - apiGroups:
-  - api.edb-operator.com
+  - apps
   resources:
-  - '*'
-  - mysqldatabases
-  - externaldatabases
+  - deployments/finalizers
+  resourceNames:
+  - edb-operator
   verbs:
-  - '*'
+  - "update"
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - get
