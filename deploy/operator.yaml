@@ -15,8 +15,7 @@ spec:
       serviceAccountName: edb-operator
       containers:
         - name: edb-operator
-          # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: unlawfulmonad/edb-operator:latest
           command:
           - edb-operator
           imagePullPolicy: Always
