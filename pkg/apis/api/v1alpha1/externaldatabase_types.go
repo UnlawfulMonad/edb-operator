@@ -23,9 +23,10 @@ type ExternalDatabaseSpec struct {
 	AdminPassword corev1.SecretReference `json:"adminPasswordSecretRef"`
 	Type          DatabaseType           `json:"type"`
 	Selector      *metav1.LabelSelector  `json:"namespaceSelector"`
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
+}
+
+type ExternalDatabaseRef struct {
+	Name string `json:"name"`
 }
 
 // ExternalDatabaseStatus defines the observed state of ExternalDatabase

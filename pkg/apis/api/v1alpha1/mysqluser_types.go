@@ -1,26 +1,24 @@
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // MySqlUserSpec defines the desired state of MySqlUser
 // +k8s:openapi-gen=true
 type MySqlUserSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
+	Name                string                    `json:"name"`
+	Host                string                    `json:"host,omitempty"`
+	ExternalDatabaseRef *ExternalDatabaseRef      `json:"externalDatabaseRef"`
+	Password            *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
 }
 
 // MySqlUserStatus defines the observed state of MySqlUser
 // +k8s:openapi-gen=true
 type MySqlUserStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
+	Created bool `json:"created"`
+	Error   bool `json:"hasError"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
