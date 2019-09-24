@@ -102,7 +102,11 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 	// Try connect to DB and add to in-memory list
 	switch instance.Spec.Type {
 	case apiv1alpha1.MySQL:
-		r.connectMySQL(instance)
+		err = r.connectMySQL(instance)
+		if err != nil {
+			reqLogger.Error(err, "failed to connect to mysql")
+			return reconcile.Result{}, err
+		}
 	case apiv1alpha1.PostgreSQL:
 		panic("unimplemented")
 	}
@@ -110,8 +114,8 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 	return reconcile.Result{}, nil
 }
 
-func (r *ReconcileExternalDatabase) connectMySQL(extdb *apiv1alpha1.ExternalDatabase) error {
-	spec := extdb.Spec
+func (r *ReconcileExternalDatabase) getPasswordRef(db *apiv1alpha1.ExternalDatabase) (*corev1.Secret, error) {
+	spec := db.Spec
 
 	secretNamespacedName := types.NamespacedName{
 		Name:      spec.AdminPasswordRef.Name,
@@ -121,12 +125,30 @@ func (r *ReconcileExternalDatabase) connectMySQL(extdb *apiv1alpha1.ExternalData
 	passwordSecret := &corev1.Secret{}
 	err := r.client.Get(context.TODO(), secretNamespacedName, passwordSecret)
 	if err != nil {
-		extdb.Status.Reachable = false
-		extdb.Status.Error = err.Error()
-		r.client.Update(context.TODO(), extdb)
+		log.Error(err, "Secret.Name", secretNamespacedName.Name, "Secret.Namespace", secretNamespacedName.Namespace)
+		return nil, err
+	}
+
+	return passwordSecret, nil
+}
+
+func (r *ReconcileExternalDatabase) connectMySQL(db *apiv1alpha1.ExternalDatabase) error {
+	spec := db.Spec
+	passwordSecret, err := r.getPasswordRef(db)
+	if err != nil {
+		db.Status.Reachable = false
+		db.Status.Error = err.Error()
+		r.client.Update(context.TODO(), db)
 		log.Info("Failed to get password secret")
 		return err
 	}
 
+	password := string(passwordSecret.Data[spec.AdminPasswordRef.Key])
+	mysql, err := edb.NewMySQL(spec.AdminUser, password, spec.Host)
+	if err != nil {
+		return err
+	}
+
+	edb.AddOrUpdateExternalDatabase(db.Name, mysql)
 	return nil
 }
