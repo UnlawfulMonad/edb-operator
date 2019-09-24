@@ -73,8 +73,41 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabaseSpec(ref common.ReferenceCallb
 			SchemaProps: spec.SchemaProps{
 				Description: "ExternalDatabaseSpec defines the desired state of ExternalDatabase",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"host": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"adminUser": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"adminPasswordRef": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/api/core/v1.SecretKeySelector"),
+						},
+					},
+					"type": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"namespaceSelector": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
+						},
+					},
+				},
+				Required: []string{"host", "adminUser", "adminPasswordRef", "type", "namespaceSelector"},
 			},
 		},
+		Dependencies: []string{
+			"k8s.io/api/core/v1.SecretKeySelector", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
 	}
 }
 
@@ -84,6 +117,22 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabaseStatus(ref common.ReferenceCal
 			SchemaProps: spec.SchemaProps{
 				Description: "ExternalDatabaseStatus defines the observed state of ExternalDatabase",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"reachable": {
+						SchemaProps: spec.SchemaProps{
+							Description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run \"operator-sdk generate k8s\" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
+					"error": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"reachable", "error"},
 			},
 		},
 	}
@@ -139,8 +188,30 @@ func schema_pkg_apis_api_v1alpha1_MySqlDatabaseSpec(ref common.ReferenceCallback
 			SchemaProps: spec.SchemaProps{
 				Description: "MySqlDatabaseSpec defines the desired state of MySqlDatabase",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"owner": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"externalDatabaseRef": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"),
+						},
+					},
+				},
+				Required: []string{"name", "owner", "externalDatabaseRef"},
 			},
 		},
+		Dependencies: []string{
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"},
 	}
 }
 
@@ -205,8 +276,35 @@ func schema_pkg_apis_api_v1alpha1_MySqlUserSpec(ref common.ReferenceCallback) co
 			SchemaProps: spec.SchemaProps{
 				Description: "MySqlUserSpec defines the desired state of MySqlUser",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"host": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"externalDatabaseRef": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"),
+						},
+					},
+					"existingPasswordSecretRef": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/api/core/v1.SecretKeySelector"),
+						},
+					},
+				},
+				Required: []string{"name", "externalDatabaseRef", "existingPasswordSecretRef"},
 			},
 		},
+		Dependencies: []string{
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef", "k8s.io/api/core/v1.SecretKeySelector"},
 	}
 }
 
@@ -216,6 +314,21 @@ func schema_pkg_apis_api_v1alpha1_MySqlUserStatus(ref common.ReferenceCallback) 
 			SchemaProps: spec.SchemaProps{
 				Description: "MySqlUserStatus defines the observed state of MySqlUser",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"created": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
+					"error": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"created", "error"},
 			},
 		},
 	}

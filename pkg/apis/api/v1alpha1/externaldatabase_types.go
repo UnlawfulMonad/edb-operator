@@ -18,11 +18,11 @@ const (
 // ExternalDatabaseSpec defines the desired state of ExternalDatabase
 // +k8s:openapi-gen=true
 type ExternalDatabaseSpec struct {
-	Host          string                 `json:"host"`
-	AdminUser     string                 `json:"adminUser"`
-	AdminPassword corev1.SecretReference `json:"adminPasswordSecretRef"`
-	Type          DatabaseType           `json:"type"`
-	Selector      *metav1.LabelSelector  `json:"namespaceSelector"`
+	Host              string                   `json:"host"`
+	AdminUser         string                   `json:"adminUser"`
+	AdminPasswordRef  corev1.SecretKeySelector `json:"adminPasswordRef"`
+	Type              DatabaseType             `json:"type"`
+	NamespaceSelector *metav1.LabelSelector    `json:"namespaceSelector"`
 }
 
 type ExternalDatabaseRef struct {
@@ -35,6 +35,8 @@ type ExternalDatabaseStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
+	Reachable bool   `json:"reachable"`
+	Error     string `json:"error"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -42,7 +44,7 @@ type ExternalDatabaseStatus struct {
 // ExternalDatabase is the Schema for the externaldatabases API
 // +k8s:openapi-gen=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:path=externaldatabases,scope=Namespaced
+// +kubebuilder:resource:path=externaldatabases,scope=Cluster
 type ExternalDatabase struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -9,7 +9,7 @@ import (
 type MySqlDatabaseSpec struct {
 	Name                string              `json:"name"`
 	Owner               *string             `json:"owner"`
-	ExternalDatabaseRef ExternalDatabaseRef `json:"ExternalDatabaseRef"`
+	ExternalDatabaseRef ExternalDatabaseRef `json:"externalDatabaseRef"`
 }
 
 // MySqlDatabaseStatus defines the observed state of MySqlDatabase

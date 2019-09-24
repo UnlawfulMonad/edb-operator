@@ -3,15 +3,16 @@ package externaldatabase
 import (
 	"context"
 
+	"os"
+
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
+	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -91,61 +92,41 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
-			// Return and don't requeue
+			edb.RemoveExternalDatabase(request.Name)
 			return reconcile.Result{}, nil
 		}
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Pod object
-	pod := newPodForCR(instance)
-
-	// Set ExternalDatabase instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
-		return reconcile.Result{}, err
+	// Try connect to DB and add to in-memory list
+	switch instance.Spec.Type {
+	case apiv1alpha1.MySQL:
+		r.connectMySQL(instance)
+	case apiv1alpha1.PostgreSQL:
+		panic("unimplemented")
 	}
 
-	// Check if this Pod already exists
-	found := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, found)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
-		err = r.client.Create(context.TODO(), pod)
-		if err != nil {
-			return reconcile.Result{}, err
-		}
-
-		// Pod created successfully - don't requeue
-		return reconcile.Result{}, nil
-	} else if err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Pod already exists - don't requeue
-	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
 	return reconcile.Result{}, nil
 }
 
-// newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *apiv1alpha1.ExternalDatabase) *corev1.Pod {
-	labels := map[string]string{
-		"app": cr.Name,
+func (r *ReconcileExternalDatabase) connectMySQL(extdb *apiv1alpha1.ExternalDatabase) error {
+	spec := extdb.Spec
+
+	secretNamespacedName := types.NamespacedName{
+		Name:      spec.AdminPasswordRef.Name,
+		Namespace: os.Getenv("POD_NAMESPACE"),
 	}
-	return &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-pod",
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
-				},
-			},
-		},
+
+	passwordSecret := &corev1.Secret{}
+	err := r.client.Get(context.TODO(), secretNamespacedName, passwordSecret)
+	if err != nil {
+		extdb.Status.Reachable = false
+		extdb.Status.Error = err.Error()
+		r.client.Update(context.TODO(), extdb)
+		log.Info("Failed to get password secret")
+		return err
 	}
+
+	return nil
 }

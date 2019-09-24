@@ -8,17 +8,17 @@ import (
 // MySqlUserSpec defines the desired state of MySqlUser
 // +k8s:openapi-gen=true
 type MySqlUserSpec struct {
-	Name                string                    `json:"name"`
-	Host                string                    `json:"host,omitempty"`
-	ExternalDatabaseRef *ExternalDatabaseRef      `json:"externalDatabaseRef"`
-	Password            *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
+	Name                      string                    `json:"name"`
+	Host                      string                    `json:"host,omitempty"`
+	ExternalDatabaseRef       *ExternalDatabaseRef      `json:"externalDatabaseRef"`
+	ExistingPasswordSecretRef *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
 }
 
 // MySqlUserStatus defines the observed state of MySqlUser
 // +k8s:openapi-gen=true
 type MySqlUserStatus struct {
-	Created bool `json:"created"`
-	Error   bool `json:"hasError"`
+	Created bool   `json:"created"`
+	Error   string `json:"error"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
