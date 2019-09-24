@@ -70,6 +70,12 @@ func (c *mySQLConn) listUsers() ([]string, error) {
 }
 
 func (c *mySQLConn) CreateUser(user, password string) error {
+
+	// Validate username
+	if !isValidUsername(user) {
+		return ErrInvalidName
+	}
+
 	users, err := c.listUsers()
 	if err != nil {
 		return err
@@ -81,7 +87,15 @@ func (c *mySQLConn) CreateUser(user, password string) error {
 		}
 	}
 
-	_, err = c.conn.Exec(`INSERT INTO mysql.user(User, Host, Password) VALUES (?, ?, PASSWORD(?))`, user, "%", password)
+	// We've already validated the username so this is safe.
+	fullUsername := `"` + user + `"@%`
+	_, err = c.conn.Exec(`CREATE USER ` + fullUsername)
+	if err != nil {
+		return err
+	}
+
+	// Set the user's password.
+	err = c.SetPassword(user, password)
 	if err != nil {
 		return err
 	}
