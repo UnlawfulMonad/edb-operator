@@ -5,45 +5,45 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// MySqlUserSpec defines the desired state of MySqlUser
+// MySQLUserSpec defines the desired state of MySqlUser
 // +k8s:openapi-gen=true
-type MySqlUserSpec struct {
+type MySQLUserSpec struct {
 	Name                      string                    `json:"name"`
 	Host                      string                    `json:"host,omitempty"`
 	ExternalDatabaseRef       *ExternalDatabaseRef      `json:"externalDatabaseRef"`
 	ExistingPasswordSecretRef *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
 }
 
-// MySqlUserStatus defines the observed state of MySqlUser
+// MySQLUserStatus defines the observed state of MySqlUser
 // +k8s:openapi-gen=true
-type MySqlUserStatus struct {
+type MySQLUserStatus struct {
 	Created bool   `json:"created"`
 	Error   string `json:"error"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// MySqlUser is the Schema for the mysqlusers API
+// MySQLUser is the Schema for the mysqlusers API
 // +k8s:openapi-gen=true
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:path=mysqlusers,scope=Namespaced
-type MySqlUser struct {
+type MySQLUser struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MySqlUserSpec   `json:"spec,omitempty"`
-	Status MySqlUserStatus `json:"status,omitempty"`
+	Spec   MySQLUserSpec   `json:"spec,omitempty"`
+	Status MySQLUserStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// MySqlUserList contains a list of MySqlUser
-type MySqlUserList struct {
+// MySQLUserList contains a list of MySqlUser
+type MySQLUserList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []MySqlUser `json:"items"`
+	Items           []MySQLUser `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&MySqlUser{}, &MySqlUserList{})
+	SchemeBuilder.Register(&MySQLUser{}, &MySQLUserList{})
 }

@@ -5,79 +5,78 @@ metadata:
 spec:
   group: api.edb-operator.com
   names:
-    kind: MySqlUser
-    listKind: MySqlUserList
+    kind: MySQLUser
+    listKind: MySQLUserList
     plural: mysqlusers
     singular: mysqluser
   scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: MySQLUser is the Schema for the mysqlusers API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MySQLUserSpec defines the desired state of MySqlUser
+          properties:
+            existingPasswordSecretRef:
+              description: SecretKeySelector selects a key of a Secret.
+              properties:
+                key:
+                  description: The key of the secret to select from.  Must be a valid
+                    secret key.
+                  type: string
+                name:
+                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    TODO: Add other useful fields. apiVersion, kind, uid?'
+                  type: string
+                optional:
+                  description: Specify whether the Secret or it's key must be defined
+                  type: boolean
+              required:
+              - key
+              type: object
+            externalDatabaseRef:
+              description: ExternalDatabaseRef talks about an external database.
+              properties:
+                name:
+                  type: string
+              type: object
+            host:
+              type: string
+            name:
+              type: string
+          required:
+          - existingPasswordSecretRef
+          - externalDatabaseRef
+          - name
+          type: object
+        status:
+          description: MySQLUserStatus defines the observed state of MySqlUser
+          properties:
+            created:
+              type: boolean
+            error:
+              type: string
+          required:
+          - created
+          - error
+          type: object
+      type: object
   version: v1alpha1
   versions:
   - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: MySqlUser is the Schema for the mysqlusers API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: MySqlUserSpec defines the desired state of MySqlUser
-            properties:
-              existingPasswordSecretRef:
-                description: SecretKeySelector selects a key of a Secret.
-                properties:
-                  key:
-                    description: The key of the secret to select from.  Must be a
-                      valid secret key.
-                    type: string
-                  name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
-                    type: string
-                  optional:
-                    description: Specify whether the Secret or it's key must be defined
-                    type: boolean
-                required:
-                - key
-                type: object
-              externalDatabaseRef:
-                properties:
-                  name:
-                    type: string
-                required:
-                - name
-                type: object
-              host:
-                type: string
-              name:
-                type: string
-            required:
-            - existingPasswordSecretRef
-            - externalDatabaseRef
-            - name
-            type: object
-          status:
-            description: MySqlUserStatus defines the observed state of MySqlUser
-            properties:
-              created:
-                type: boolean
-              error:
-                type: string
-            required:
-            - created
-            - error
-            type: object
-        type: object
     served: true
     storage: true
-    subresources:
-      status: {}

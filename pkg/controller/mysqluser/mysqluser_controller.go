@@ -45,7 +45,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to primary resource MySqlUser
-	err = c.Watch(&source.Kind{Type: &apiv1alpha1.MySqlUser{}}, &handler.EnqueueRequestForObject{})
+	err = c.Watch(&source.Kind{Type: &apiv1alpha1.MySQLUser{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Watch for changes to secondary resource Pods and requeue the owner MySqlUser
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &apiv1alpha1.MySqlUser{},
+		OwnerType:    &apiv1alpha1.MySQLUser{},
 	})
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	reqLogger.Info("Reconciling MySqlUser")
 
 	// Fetch the MySqlUser instance
-	instance := &apiv1alpha1.MySqlUser{}
+	instance := &apiv1alpha1.MySQLUser{}
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {

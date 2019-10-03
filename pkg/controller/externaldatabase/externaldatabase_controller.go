@@ -104,7 +104,7 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 	case apiv1alpha1.MySQL:
 		err = r.connectMySQL(instance)
 		if err != nil {
-			reqLogger.Error(err, "failed to connect to mysql")
+			reqLogger.Error(err, "failed to connect to MySQL")
 			return reconcile.Result{}, err
 		}
 	case apiv1alpha1.PostgreSQL:

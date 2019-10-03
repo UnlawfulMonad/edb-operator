@@ -12,9 +12,6 @@ const (
 	PostgreSQL DatabaseType = "postgresql"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // ExternalDatabaseSpec defines the desired state of ExternalDatabase
 // +k8s:openapi-gen=true
 type ExternalDatabaseSpec struct {
@@ -22,21 +19,20 @@ type ExternalDatabaseSpec struct {
 	AdminUser         string                   `json:"adminUser"`
 	AdminPasswordRef  corev1.SecretKeySelector `json:"adminPasswordRef"`
 	Type              DatabaseType             `json:"type"`
-	NamespaceSelector *metav1.LabelSelector    `json:"namespaceSelector"`
+	NamespaceSelector *metav1.LabelSelector    `json:"namespaceSelector,omitempty"`
 }
 
+// ExternalDatabaseRef talks about an external database.
+// +k8s:openapi-gen=true
 type ExternalDatabaseRef struct {
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 // ExternalDatabaseStatus defines the observed state of ExternalDatabase
 // +k8s:openapi-gen=true
 type ExternalDatabaseStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	Reachable bool   `json:"reachable"`
-	Error     string `json:"error"`
+	Reachable bool   `json:"reachable,omitempty"`
+	Error     string `json:"error,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

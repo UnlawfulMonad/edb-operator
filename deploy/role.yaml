@@ -1,5 +1,5 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: edb-operator
 rules:
@@ -14,6 +14,12 @@ rules:
   - events
   - configmaps
   - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
   verbs:
   - '*'
 - apiGroups:
@@ -56,7 +62,5 @@ rules:
   - api.edb-operator.com
   resources:
   - '*'
-  - mysqldatabases
-  - mysqlusers
   verbs:
   - '*'

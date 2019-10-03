@@ -2,8 +2,10 @@ package mysqldatabase
 
 import (
 	"context"
+	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
+	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -43,7 +45,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to primary resource MySqlDatabase
-	err = c.Watch(&source.Kind{Type: &apiv1alpha1.MySqlDatabase{}}, &handler.EnqueueRequestForObject{})
+	err = c.Watch(&source.Kind{Type: &apiv1alpha1.MySQLDatabase{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -52,7 +54,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Watch for changes to secondary resource Pods and requeue the owner MySqlDatabase
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &apiv1alpha1.MySqlDatabase{},
+		OwnerType:    &apiv1alpha1.MySQLDatabase{},
 	})
 	if err != nil {
 		return err
@@ -81,10 +83,11 @@ type ReconcileMySQLDatabase struct {
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
 func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
-	reqLogger.Info("Reconciling MySqlDatabase")
+	reqLogger.Info("Reconciling MySQLDatabase")
+	defer reqLogger.Info("Finished reconciling MySQLDatabase")
 
 	// Fetch the MySqlDatabase instance
-	instance := &apiv1alpha1.MySqlDatabase{}
+	instance := &apiv1alpha1.MySQLDatabase{}
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -95,6 +98,14 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 		}
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
+	}
+
+	database := edb.LookupExternalDatabase(instance.Spec.ExternalDatabaseRef.Name)
+	if database == nil {
+		instance.Status.Error = "unable to find ExternalDatabase instance"
+		//err = r.client.Update(context.TODO(), instance)
+		err = r.client.Status().Update(context.TODO(), instance)
+		return reconcile.Result{RequeueAfter: 10 * time.Second}, err
 	}
 
 	return reconcile.Result{}, nil

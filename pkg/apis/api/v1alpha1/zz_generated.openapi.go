@@ -12,14 +12,15 @@ import (
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabase":       schema_pkg_apis_api_v1alpha1_ExternalDatabase(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef":    schema_pkg_apis_api_v1alpha1_ExternalDatabaseRef(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseSpec":   schema_pkg_apis_api_v1alpha1_ExternalDatabaseSpec(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseStatus": schema_pkg_apis_api_v1alpha1_ExternalDatabaseStatus(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabase":          schema_pkg_apis_api_v1alpha1_MySqlDatabase(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseSpec":      schema_pkg_apis_api_v1alpha1_MySqlDatabaseSpec(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseStatus":    schema_pkg_apis_api_v1alpha1_MySqlDatabaseStatus(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUser":              schema_pkg_apis_api_v1alpha1_MySqlUser(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserSpec":          schema_pkg_apis_api_v1alpha1_MySqlUserSpec(ref),
-		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserStatus":        schema_pkg_apis_api_v1alpha1_MySqlUserStatus(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabase":          schema_pkg_apis_api_v1alpha1_MySQLDatabase(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseSpec":      schema_pkg_apis_api_v1alpha1_MySQLDatabaseSpec(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseStatus":    schema_pkg_apis_api_v1alpha1_MySQLDatabaseStatus(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUser":              schema_pkg_apis_api_v1alpha1_MySQLUser(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserSpec":          schema_pkg_apis_api_v1alpha1_MySQLUserSpec(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserStatus":        schema_pkg_apis_api_v1alpha1_MySQLUserStatus(ref),
 	}
 }
 
@@ -67,6 +68,25 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabase(ref common.ReferenceCallback)
 	}
 }
 
+func schema_pkg_apis_api_v1alpha1_ExternalDatabaseRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "ExternalDatabaseRef talks about an external database.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func schema_pkg_apis_api_v1alpha1_ExternalDatabaseSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -103,7 +123,7 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabaseSpec(ref common.ReferenceCallb
 						},
 					},
 				},
-				Required: []string{"host", "adminUser", "adminPasswordRef", "type", "namespaceSelector"},
+				Required: []string{"host", "adminUser", "adminPasswordRef", "type"},
 			},
 		},
 		Dependencies: []string{
@@ -120,9 +140,8 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabaseStatus(ref common.ReferenceCal
 				Properties: map[string]spec.Schema{
 					"reachable": {
 						SchemaProps: spec.SchemaProps{
-							Description: "INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run \"operator-sdk generate k8s\" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html",
-							Type:        []string{"boolean"},
-							Format:      "",
+							Type:   []string{"boolean"},
+							Format: "",
 						},
 					},
 					"error": {
@@ -132,17 +151,16 @@ func schema_pkg_apis_api_v1alpha1_ExternalDatabaseStatus(ref common.ReferenceCal
 						},
 					},
 				},
-				Required: []string{"reachable", "error"},
 			},
 		},
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlDatabase(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLDatabase(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlDatabase is the Schema for the mysqldatabases API",
+				Description: "MySQLDatabase is the Schema for the mysqldatabases API",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -166,27 +184,27 @@ func schema_pkg_apis_api_v1alpha1_MySqlDatabase(ref common.ReferenceCallback) co
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseSpec"),
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseSpec"),
 						},
 					},
 					"status": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseStatus"),
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseStatus"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseSpec", "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlDatabaseStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseSpec", "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlDatabaseSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLDatabaseSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlDatabaseSpec defines the desired state of MySqlDatabase",
+				Description: "MySQLDatabaseSpec defines the desired state of MySqlDatabase",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"name": {
@@ -207,7 +225,7 @@ func schema_pkg_apis_api_v1alpha1_MySqlDatabaseSpec(ref common.ReferenceCallback
 						},
 					},
 				},
-				Required: []string{"name", "owner", "externalDatabaseRef"},
+				Required: []string{"name", "externalDatabaseRef"},
 			},
 		},
 		Dependencies: []string{
@@ -215,22 +233,36 @@ func schema_pkg_apis_api_v1alpha1_MySqlDatabaseSpec(ref common.ReferenceCallback
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlDatabaseStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLDatabaseStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlDatabaseStatus defines the observed state of MySqlDatabase",
+				Description: "MySQLDatabaseStatus defines the observed state of MySQLDatabase",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"error": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"created": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
+				},
 			},
 		},
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlUser(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLUser(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlUser is the Schema for the mysqlusers API",
+				Description: "MySQLUser is the Schema for the mysqlusers API",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -254,27 +286,27 @@ func schema_pkg_apis_api_v1alpha1_MySqlUser(ref common.ReferenceCallback) common
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserSpec"),
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserSpec"),
 						},
 					},
 					"status": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserStatus"),
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserStatus"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserSpec", "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySqlUserStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserSpec", "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlUserSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLUserSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlUserSpec defines the desired state of MySqlUser",
+				Description: "MySQLUserSpec defines the desired state of MySqlUser",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"name": {
@@ -308,11 +340,11 @@ func schema_pkg_apis_api_v1alpha1_MySqlUserSpec(ref common.ReferenceCallback) co
 	}
 }
 
-func schema_pkg_apis_api_v1alpha1_MySqlUserStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_pkg_apis_api_v1alpha1_MySQLUserStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MySqlUserStatus defines the observed state of MySqlUser",
+				Description: "MySQLUserStatus defines the observed state of MySqlUser",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"created": {
