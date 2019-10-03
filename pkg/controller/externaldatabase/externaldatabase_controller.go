@@ -139,13 +139,24 @@ func (r *ReconcileExternalDatabase) connectMySQL(db *apiv1alpha1.ExternalDatabas
 		db.Status.Reachable = false
 		db.Status.Error = err.Error()
 		r.client.Update(context.TODO(), db)
-		log.Info("Failed to get password secret")
+		log.Error(err, "failed to get password secret")
 		return err
 	}
 
 	password := string(passwordSecret.Data[spec.AdminPasswordRef.Key])
-	mysql, err := edb.NewMySQL(spec.AdminUser, password, spec.Host)
+
+	log.Info("connecting to MySQL database")
+	mysql, err := edb.NewMySQL(spec.AdminUser, password, spec.Host, "edb")
 	if err != nil {
+		log.Error(err, "unable to connect to MySQL database")
+		return err
+	}
+
+	log.Info("connected successfully")
+
+	err = mysql.Ping()
+	if err != nil {
+		log.Error(err, "unable to ping database...")
 		return err
 	}
 

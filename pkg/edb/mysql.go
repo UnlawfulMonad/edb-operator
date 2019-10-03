@@ -15,8 +15,8 @@ type mySQLConn struct {
 	conn *sql.DB
 }
 
-func NewMySQL(adminUser, adminPassword, adminHost string) (ExternalDB, error) {
-	connStr := fmt.Sprintf("%s:%s@tcp(%s)/?timeout=30s", adminUser, adminPassword, adminHost)
+func NewMySQL(adminUser, adminPassword, adminHost, dbName string) (ExternalDB, error) {
+	connStr := fmt.Sprintf("%s:%s@tcp(%s)/%s", adminUser, adminPassword, adminHost, dbName)
 
 	db, err := sql.Open("mysql", connStr)
 	if err != nil {

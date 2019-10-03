@@ -5,6 +5,7 @@ import (
 	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
@@ -108,13 +109,44 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 		return reconcile.Result{RequeueAfter: 5 * time.Second}, nil
 	}
 
-	return reconcile.Result{}, nil
+	secret, err := r.getSecretForUser(instance)
+	if err != nil {
+
+		// If the secret doesn't exist then we create it.
+		if errors.IsNotFound(err) {
+			reqLogger.Info("Creating new secret")
+			secret = newSecretForMySQLUser(instance)
+			err := r.client.Create(context.TODO(), secret)
+			if err != nil {
+				reqLogger.Error(err, "failed to create secret")
+				return reconcile.Result{}, err
+			}
+		} else {
+			return reconcile.Result{}, err
+		}
+	}
+
+	err = db.CreateUser(instance.Name, string(secret.Data["mysql-password"]))
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	instance.Status.Created = true
+	err = r.client.Status().Update(context.TODO(), instance)
+	return reconcile.Result{}, err
 }
 
 // getSecretForUser gets the secret if it already exists in the given namespace
-func (r *ReconcileMySQLUser) getSecretForUser(instance *apiv1alpha1.MySQLUser) *corev1.Secret {
-	// TODO
-	return nil
+func (r *ReconcileMySQLUser) getSecretForUser(instance *apiv1alpha1.MySQLUser) (*corev1.Secret, error) {
+	nn := types.NamespacedName{Name: instance.Spec.PasswordSecretName, Namespace: instance.Namespace}
+
+	secret := &corev1.Secret{}
+	err := r.client.Get(context.TODO(), nn, secret)
+	if err != nil {
+		return nil, err
+	}
+
+	return secret, nil
 }
 
 var (

@@ -8,7 +8,7 @@ require (
 	github.com/operator-framework/operator-sdk v0.10.1-0.20190919225052-3a85983ecc72
 	github.com/sethvargo/go-password v0.1.2
 	github.com/spf13/pflag v1.0.3
-	google.golang.org/appengine v1.6.3 // indirect
+	google.golang.org/appengine v1.6.4 // indirect
 	k8s.io/api v0.0.0-20190612125737-db0771252981
 	k8s.io/apimachinery v0.0.0-20190612125636-6a5db36e93ad
 	k8s.io/client-go v11.0.1-0.20190409021438-1a26190bd76a+incompatible
