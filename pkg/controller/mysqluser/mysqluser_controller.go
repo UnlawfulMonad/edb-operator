@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	corev1 "k8s.io/api/core/v1"
@@ -107,4 +109,34 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	}
 
 	return reconcile.Result{}, nil
+}
+
+// getSecretForUser gets the secret if it already exists in the given namespace
+func (r *ReconcileMySQLUser) getSecretForUser(instance *apiv1alpha1.MySQLUser) *corev1.Secret {
+	// TODO
+	return nil
+}
+
+var (
+	defaultSecretAnnotations = map[string]string{
+		"api.edb-operator.com/generated": "true",
+	}
+)
+
+func newSecretForMySQLUser(instance *apiv1alpha1.MySQLUser) *corev1.Secret {
+	password := edb.GenPassword()
+
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        instance.Spec.PasswordSecretName,
+			Namespace:   instance.Namespace,
+			Annotations: defaultSecretAnnotations,
+		},
+
+		Data: map[string][]byte{
+			"mysql-password": []byte(password),
+		},
+	}
+
+	return secret
 }

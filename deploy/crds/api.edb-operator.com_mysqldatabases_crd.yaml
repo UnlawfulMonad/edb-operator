@@ -52,6 +52,12 @@ spec:
               type: boolean
             error:
               type: string
+            existingSecret:
+              type: string
+            secretCreated:
+              type: boolean
+          required:
+          - secretCreated
           type: object
       type: object
   version: v1alpha1

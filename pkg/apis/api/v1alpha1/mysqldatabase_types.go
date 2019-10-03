@@ -17,6 +17,9 @@ type MySQLDatabaseSpec struct {
 type MySQLDatabaseStatus struct {
 	Error   string `json:"error,omitempty"`
 	Created bool   `json:"created,omitempty"`
+
+	SecretCreated  bool   `json:"secretCreated"`
+	ExistingSecret string `json:"existingSecret,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

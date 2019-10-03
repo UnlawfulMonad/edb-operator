@@ -1,17 +1,17 @@
 package v1alpha1
 
 import (
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // MySQLUserSpec defines the desired state of MySqlUser
 // +k8s:openapi-gen=true
 type MySQLUserSpec struct {
-	Name                      string                    `json:"name"`
-	Host                      string                    `json:"host,omitempty"`
-	ExternalDatabaseRef       *ExternalDatabaseRef      `json:"externalDatabaseRef"`
-	ExistingPasswordSecretRef *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
+	Name                string               `json:"name"`
+	Host                string               `json:"host,omitempty"`
+	ExternalDatabaseRef *ExternalDatabaseRef `json:"externalDatabaseRef"`
+	PasswordSecretName  string               `json:"passwordSecretName"`
+	// ExistingPasswordSecretRef *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
 }
 
 // MySQLUserStatus defines the observed state of MySqlUser

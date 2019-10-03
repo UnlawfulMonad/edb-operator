@@ -5,7 +5,6 @@
 package v1alpha1
 
 import (
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
@@ -292,11 +291,6 @@ func (in *MySQLUserSpec) DeepCopyInto(out *MySQLUserSpec) {
 		in, out := &in.ExternalDatabaseRef, &out.ExternalDatabaseRef
 		*out = new(ExternalDatabaseRef)
 		**out = **in
-	}
-	if in.ExistingPasswordSecretRef != nil {
-		in, out := &in.ExistingPasswordSecretRef, &out.ExistingPasswordSecretRef
-		*out = new(corev1.SecretKeySelector)
-		(*in).DeepCopyInto(*out)
 	}
 	return
 }

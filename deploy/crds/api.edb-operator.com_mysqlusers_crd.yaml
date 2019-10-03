@@ -31,23 +31,6 @@ spec:
         spec:
           description: MySQLUserSpec defines the desired state of MySqlUser
           properties:
-            existingPasswordSecretRef:
-              description: SecretKeySelector selects a key of a Secret.
-              properties:
-                key:
-                  description: The key of the secret to select from.  Must be a valid
-                    secret key.
-                  type: string
-                name:
-                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                    TODO: Add other useful fields. apiVersion, kind, uid?'
-                  type: string
-                optional:
-                  description: Specify whether the Secret or it's key must be defined
-                  type: boolean
-              required:
-              - key
-              type: object
             externalDatabaseRef:
               description: ExternalDatabaseRef talks about an external database.
               properties:
@@ -58,10 +41,12 @@ spec:
               type: string
             name:
               type: string
+            passwordSecretName:
+              type: string
           required:
-          - existingPasswordSecretRef
           - externalDatabaseRef
           - name
+          - passwordSecretName
           type: object
         status:
           description: MySQLUserStatus defines the observed state of MySqlUser

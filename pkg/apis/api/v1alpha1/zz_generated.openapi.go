@@ -252,7 +252,20 @@ func schema_pkg_apis_api_v1alpha1_MySQLDatabaseStatus(ref common.ReferenceCallba
 							Format: "",
 						},
 					},
+					"secretCreated": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
+					"existingSecret": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
 				},
+				Required: []string{"secretCreated"},
 			},
 		},
 	}
@@ -326,17 +339,18 @@ func schema_pkg_apis_api_v1alpha1_MySQLUserSpec(ref common.ReferenceCallback) co
 							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"),
 						},
 					},
-					"existingPasswordSecretRef": {
+					"passwordSecretName": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("k8s.io/api/core/v1.SecretKeySelector"),
+							Type:   []string{"string"},
+							Format: "",
 						},
 					},
 				},
-				Required: []string{"name", "externalDatabaseRef", "existingPasswordSecretRef"},
+				Required: []string{"name", "externalDatabaseRef", "passwordSecretName"},
 			},
 		},
 		Dependencies: []string{
-			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef", "k8s.io/api/core/v1.SecretKeySelector"},
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"},
 	}
 }
 
