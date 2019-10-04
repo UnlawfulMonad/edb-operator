@@ -5,16 +5,22 @@ import (
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/api/errors"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 var (
+	// ErrInvalidName is send out when the name provided doesn't comform to the
+	// name restrictions.
 	ErrInvalidName = errors.NewInternalError(fmt.Errorf("name is invalid"))
+
+	mlog = logf.Log.WithName("edb_mysql")
 )
 
 type mySQLConn struct {
 	conn *sql.DB
 }
 
+// NewMySQL creates a connection to a MySQL database.
 func NewMySQL(adminUser, adminPassword, adminHost, dbName string) (ExternalDB, error) {
 	connStr := fmt.Sprintf("%s:%s@tcp(%s)/%s", adminUser, adminPassword, adminHost, dbName)
 
@@ -115,31 +121,32 @@ func (c *mySQLConn) SetPassword(user, password string) error {
 }
 
 func (c *mySQLConn) CreateDB(name, owner string) error {
-	if !isValidUsername(owner) {
-		return ErrInvalidName
-	}
+	log := mlog.WithValues("Database", name)
+	//if !isValidUsername(owner) {
+	//	return ErrInvalidName
+	//}
 
 	if !isValidUsername(name) {
 		return ErrInvalidName
 	}
 
-	users, err := c.listUsers()
-	if err != nil {
-		return err
-	}
+	//users, err := c.listUsers()
+	//if err != nil {
+	//	return err
+	//}
 
-	haveUser := false
-	for _, user := range users {
-		if user == owner {
-			haveUser = true
-			break
-		}
-	}
+	//haveUser := false
+	//for _, user := range users {
+	//	if user == owner {
+	//		haveUser = true
+	//		break
+	//	}
+	//}
 
-	if !haveUser {
-		// FIX ME
-		return errors.NewServiceUnavailable("user does not exist")
-	}
+	//if !haveUser {
+	//	// FIX ME
+	//	return errors.NewServiceUnavailable("user does not exist")
+	//}
 
 	dbs, err := c.listDatabases()
 	if err != nil {
@@ -158,15 +165,17 @@ func (c *mySQLConn) CreateDB(name, owner string) error {
 		return nil
 	}
 
+	log.Info("creating database")
 	if _, err := c.conn.Exec(fmt.Sprintf(`CREATE DATABASE IF NOT EXISTS %s`, name)); err != nil {
 		return err
 	}
 
-	_, err = c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO '%s'@'%%'`, name, owner))
-	if err != nil {
-		return err
-	}
+	//_, err = c.conn.Exec(fmt.Sprintf(`GRANT ALL ON %s.* TO '%s'@'%%'`, name, owner))
+	//if err != nil {
+	//	return err
+	//}
 
+	log.Info("flushing privilages")
 	c.flushPrivs()
 
 	return nil
