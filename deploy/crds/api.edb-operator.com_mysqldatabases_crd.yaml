@@ -39,8 +39,6 @@ spec:
               type: object
             name:
               type: string
-            owner:
-              type: string
           required:
           - externalDatabaseRef
           - name

@@ -213,12 +213,6 @@ func schema_pkg_apis_api_v1alpha1_MySQLDatabaseSpec(ref common.ReferenceCallback
 							Format: "",
 						},
 					},
-					"owner": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
 					"externalDatabaseRef": {
 						SchemaProps: spec.SchemaProps{
 							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"),

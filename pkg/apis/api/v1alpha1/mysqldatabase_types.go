@@ -8,7 +8,6 @@ import (
 // +k8s:openapi-gen=true
 type MySQLDatabaseSpec struct {
 	Name                string              `json:"name"`
-	Owner               *string             `json:"owner,omitempty"`
 	ExternalDatabaseRef ExternalDatabaseRef `json:"externalDatabaseRef"`
 }
 
