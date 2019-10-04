@@ -74,6 +74,11 @@ type ReconcileExternalDatabase struct {
 	scheme *runtime.Scheme
 }
 
+func (r *ReconcileExternalDatabase) clearError(instance *apiv1alpha1.ExternalDatabase) error {
+	instance.Status.Error = ""
+	return r.client.Status().Update(context.TODO(), instance)
+}
+
 // Reconcile reads that state of the cluster for a ExternalDatabase object and makes changes based on the state read
 // and what is in the ExternalDatabase.Spec
 // TODO(user): Modify this Reconcile function to implement your Controller logic.  This example creates
@@ -109,6 +114,13 @@ func (r *ReconcileExternalDatabase) Reconcile(request reconcile.Request) (reconc
 		}
 	case apiv1alpha1.PostgreSQL:
 		panic("unimplemented")
+	}
+
+	err = r.clearError(instance)
+	if err != nil {
+		log.Error(err, "failed to clear error")
+		// This isn't a fatal error. Don't return it but do log it.
+		// return reconcile.Result{}, err
 	}
 
 	return reconcile.Result{}, nil
