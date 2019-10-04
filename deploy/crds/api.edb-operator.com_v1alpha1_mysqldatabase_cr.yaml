@@ -1,7 +1,0 @@
-apiVersion: api.edb-operator.com/v1alpha1
-kind: MySqlDatabase
-metadata:
-  name: example-mysqldatabase
-spec:
-  # Add fields here
-  size: 3
