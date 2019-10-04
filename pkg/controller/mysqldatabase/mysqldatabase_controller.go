@@ -108,7 +108,7 @@ func (r *ReconcileMySQLDatabase) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{RequeueAfter: 10 * time.Second}, err
 	}
 
-	err = database.CreateDB(instance.Spec.Name, "edb")
+	err = database.CreateDB(instance.Spec.Name)
 	if err != nil {
 		return reconcile.Result{}, err
 	}

@@ -120,33 +120,12 @@ func (c *mySQLConn) SetPassword(user, password string) error {
 	return nil
 }
 
-func (c *mySQLConn) CreateDB(name, owner string) error {
+func (c *mySQLConn) CreateDB(name string) error {
 	log := mlog.WithValues("Database", name)
-	//if !isValidUsername(owner) {
-	//	return ErrInvalidName
-	//}
 
 	if !isValidUsername(name) {
 		return ErrInvalidName
 	}
-
-	//users, err := c.listUsers()
-	//if err != nil {
-	//	return err
-	//}
-
-	//haveUser := false
-	//for _, user := range users {
-	//	if user == owner {
-	//		haveUser = true
-	//		break
-	//	}
-	//}
-
-	//if !haveUser {
-	//	// FIX ME
-	//	return errors.NewServiceUnavailable("user does not exist")
-	//}
 
 	dbs, err := c.listDatabases()
 	if err != nil {
