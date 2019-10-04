@@ -5,10 +5,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// DatabaseType specifies what kind of database is being described.
 type DatabaseType string
 
 const (
-	MySQL      DatabaseType = "mysql"
+	// MySQL database type.
+	MySQL DatabaseType = "mysql"
+	// PostgreSQL database type.
 	PostgreSQL DatabaseType = "postgresql"
 )
 

@@ -99,6 +99,7 @@ spec:
                   type: object
               type: object
             type:
+              description: DatabaseType specifies what kind of database is being described.
               type: string
           required:
           - adminPasswordRef
