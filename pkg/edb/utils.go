@@ -1,10 +1,20 @@
 package edb
 
 import (
+	"regexp"
 	"runtime"
 
 	"github.com/sethvargo/go-password/password"
 )
+
+var (
+	userValidateRegexp = regexp.MustCompile(`^[a-z][a-z0-9]*$`)
+)
+
+// Checks if the passed string is a valid identifier.
+func isValidIdentifier(name string) bool {
+	return userValidateRegexp.MatchString(name)
+}
 
 // StackTrace gets a trace from the runtime package as a string
 func StackTrace() string {

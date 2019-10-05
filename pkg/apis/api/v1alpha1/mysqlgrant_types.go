@@ -4,21 +4,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// A Permission is what a grant looks for
-type Permission string
-
-const (
-	// Select permission.
-	Select Permission = "SELECT"
-	// All privileges.
-	All = "ALL"
-)
-
 // MySQLGrantSpec defines the desired state of MySQLGrant
 // +k8s:openapi-gen=true
 type MySQLGrantSpec struct {
-	To         string `json:"to"`
-	On         string `json:"on"`
+	To string `json:"to"`
+	On string `json:"on"`
+
 	Permission string `json:"permission"`
 }
 

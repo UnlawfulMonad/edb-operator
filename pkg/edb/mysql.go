@@ -4,15 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/api/errors"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 var (
-	// ErrInvalidName is send out when the name provided doesn't comform to the
-	// name restrictions.
-	ErrInvalidName = errors.NewInternalError(fmt.Errorf("name is invalid"))
-
 	mlog = logf.Log.WithName("edb_mysql")
 )
 
@@ -51,6 +46,21 @@ func (c *mySQLConn) listDatabases() ([]string, error) {
 	}
 
 	return dbs, nil
+}
+
+func (c *mySQLConn) Grant(permission, to, on string) error {
+	if !isValidIdentifier(to) || !isValidIdentifier(on) {
+		return ErrInvalidName
+	}
+
+	query := fmt.Sprintf(`GRANT %s ON %s TO %s`, permission, on, to)
+
+	_, err := c.conn.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *mySQLConn) listUsers() ([]string, error) {
