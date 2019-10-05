@@ -18,6 +18,9 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabase":          schema_pkg_apis_api_v1alpha1_MySQLDatabase(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseSpec":      schema_pkg_apis_api_v1alpha1_MySQLDatabaseSpec(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLDatabaseStatus":    schema_pkg_apis_api_v1alpha1_MySQLDatabaseStatus(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrant":             schema_pkg_apis_api_v1alpha1_MySQLGrant(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantSpec":         schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref),
+		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantStatus":       schema_pkg_apis_api_v1alpha1_MySQLGrantStatus(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUser":              schema_pkg_apis_api_v1alpha1_MySQLUser(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserSpec":          schema_pkg_apis_api_v1alpha1_MySQLUserSpec(ref),
 		"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLUserStatus":        schema_pkg_apis_api_v1alpha1_MySQLUserStatus(ref),
@@ -260,6 +263,102 @@ func schema_pkg_apis_api_v1alpha1_MySQLDatabaseStatus(ref common.ReferenceCallba
 					},
 				},
 				Required: []string{"secretCreated"},
+			},
+		},
+	}
+}
+
+func schema_pkg_apis_api_v1alpha1_MySQLGrant(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MySQLGrant is the Schema for the mysqlgrants API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantSpec", "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.MySQLGrantStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MySQLGrantSpec defines the desired state of MySQLGrant",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"to": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"on": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"permission": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"to", "on", "permission"},
+			},
+		},
+	}
+}
+
+func schema_pkg_apis_api_v1alpha1_MySQLGrantStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MySQLGrantStatus defines the observed state of MySQLGrant",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"granted": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"granted"},
 			},
 		},
 	}
