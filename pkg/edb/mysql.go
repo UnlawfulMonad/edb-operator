@@ -78,7 +78,7 @@ func (c *mySQLConn) listUsers() ([]string, error) {
 func (c *mySQLConn) CreateUser(user, password string) error {
 
 	// Validate username
-	if !isValidUsername(user) {
+	if !isValidIdentifier(user) {
 		return ErrInvalidName
 	}
 
@@ -123,7 +123,7 @@ func (c *mySQLConn) SetPassword(user, password string) error {
 func (c *mySQLConn) CreateDB(name string) error {
 	log := mlog.WithValues("Database", name)
 
-	if !isValidUsername(name) {
+	if !isValidIdentifier(name) {
 		return ErrInvalidName
 	}
 

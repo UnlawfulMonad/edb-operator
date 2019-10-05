@@ -57,6 +57,6 @@ var (
 	userValidateRegexp = regexp.MustCompile(`^[a-z][a-z0-9]*$`)
 )
 
-func isValidUsername(name string) bool {
+func isValidIdentifier(name string) bool {
 	return userValidateRegexp.MatchString(name)
 }
