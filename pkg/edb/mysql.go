@@ -60,6 +60,8 @@ func (c *mySQLConn) Grant(permission, to, on string) error {
 		return err
 	}
 
+	c.flushPrivs()
+
 	return nil
 }
 
