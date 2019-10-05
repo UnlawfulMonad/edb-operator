@@ -10,8 +10,11 @@ import (
 
 	// Import the PostgreSQL driver
 	_ "github.com/lib/pq"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+// An ExternalDB is the generic interface for handling database connections.
+// It's effectively an easy to use wrapper around the various database drivers.
 type ExternalDB interface {
 	CreateUser(name, password string) error
 	CreateDB(name string) error
@@ -25,6 +28,8 @@ var (
 	externalDatabases      = make(map[string]ExternalDB)
 )
 
+// LookupExternalDatabase finds a registered external database and outputs it
+// if it exists. Returns nil if the named database does not exist.
 func LookupExternalDatabase(name string) ExternalDB {
 	externalDatabasesMutex.Lock()
 	defer externalDatabasesMutex.Unlock()
@@ -37,6 +42,9 @@ func LookupExternalDatabase(name string) ExternalDB {
 	return db
 }
 
+// AddOrUpdateExternalDatabase registers an external database.
+// the passed external database cannot be nil. If the database already
+// exists it will update the entry.
 func AddOrUpdateExternalDatabase(name string, db ExternalDB) {
 	if db == nil {
 		panic("cannot add a nil ExternalDB. This is probably a bug. Please report it at https://github.com/UnlawfulMonad/edb-operator/issues")
@@ -47,16 +55,27 @@ func AddOrUpdateExternalDatabase(name string, db ExternalDB) {
 	externalDatabasesMutex.Unlock()
 }
 
+// RemoveExternalDatabase closes a connection and deregisters an
+// external database.
 func RemoveExternalDatabase(name string) {
 	externalDatabasesMutex.Lock()
-	delete(externalDatabases, name)
-	externalDatabasesMutex.Unlock()
+	defer externalDatabasesMutex.Unlock()
+
+	value, ok := externalDatabases[name]
+	if ok {
+		if err := value.Close(); err != nil {
+			logf.Log.Error(err, "failed to close database")
+		}
+
+		delete(externalDatabases, name)
+	}
 }
 
 var (
 	userValidateRegexp = regexp.MustCompile(`^[a-z][a-z0-9]*$`)
 )
 
+// Checks if the passed string is a valid identifier.
 func isValidIdentifier(name string) bool {
 	return userValidateRegexp.MatchString(name)
 }
