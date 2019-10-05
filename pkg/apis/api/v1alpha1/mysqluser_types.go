@@ -7,10 +7,10 @@ import (
 // MySQLUserSpec defines the desired state of MySqlUser
 // +k8s:openapi-gen=true
 type MySQLUserSpec struct {
-	Name                string               `json:"name"`
-	Host                string               `json:"host,omitempty"`
-	ExternalDatabaseRef *ExternalDatabaseRef `json:"externalDatabaseRef"`
-	PasswordSecretName  string               `json:"passwordSecretName"`
+	Name                string              `json:"name"`
+	Host                string              `json:"host,omitempty"`
+	ExternalDatabaseRef ExternalDatabaseRef `json:"externalDatabaseRef"`
+	PasswordSecretName  string              `json:"passwordSecretName"`
 	// ExistingPasswordSecretRef *corev1.SecretKeySelector `json:"existingPasswordSecretRef"`
 }
 
