@@ -117,6 +117,8 @@ func (c *mySQLConn) SetPassword(user, password string) error {
 		return err
 	}
 
+	c.flushPrivs()
+
 	return nil
 }
 
