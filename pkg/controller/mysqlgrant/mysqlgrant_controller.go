@@ -2,8 +2,10 @@ package mysqlgrant
 
 import (
 	"context"
+	"strings"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
+	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -90,7 +92,36 @@ func (r *ReconcileMySQLGrant) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
+	permission := instance.Spec.Permission
+	if !isValidGrant(permission) {
+		reqLogger.Error(edb.ErrUnsupportedPermission, "provided permission was invalid")
+		return reconcile.Result{}, edb.ErrUnsupportedPermission
+	}
+
 	// TODO
+	// Ensure the database and user are created (and in the same namespace)
+
+	database := edb.LookupExternalDatabase(instance.Spec.On)
+	err = database.Grant(instance.Spec.Permission, instance.Spec.To, instance.Spec.On)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	instance.Status.Granted = true
+	r.client.Status().Update(context.TODO(), instance)
 
 	return reconcile.Result{}, nil
+}
+
+var validGrants = []string{"all", "select", "insert", "update", "delete"}
+
+func isValidGrant(permission string) bool {
+	permission = strings.ToLower(permission)
+	for _, grant := range validGrants {
+		if permission == grant {
+			return true
+		}
+	}
+
+	return false
 }

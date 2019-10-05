@@ -22,7 +22,7 @@ var (
 
 	// ErrUnsupportedPermission is what is returned when the user tries to pass a
 	// a permission that isn't supported by the system.
-	ErrUnsupportedPermission = errors.IsInvalid(fmt.Errorf("the passed permission is invalid"))
+	ErrUnsupportedPermission = errors.NewInternalError(fmt.Errorf("the passed permission is invalid"))
 )
 
 // An ExternalDB is the generic interface for handling database connections.
