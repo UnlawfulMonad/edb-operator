@@ -106,7 +106,7 @@ func (c *mySQLConn) CreateUser(user, password string) error {
 	}
 
 	// We've already validated the username so this is safe.
-	fullUsername := `"` + user + `"@%`
+	fullUsername := `"` + user + `"@'%'`
 	_, err = c.conn.Exec(`CREATE USER ` + fullUsername)
 	if err != nil {
 		return err

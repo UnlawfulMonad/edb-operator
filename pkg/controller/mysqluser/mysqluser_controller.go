@@ -127,11 +127,6 @@ func (r *ReconcileMySQLUser) Reconcile(request reconcile.Request) (reconcile.Res
 	}
 
 	password := string(secret.Data["mysql-password"])
-	err = db.CreateUser(instance.Name, password)
-	if err != nil {
-		return reconcile.Result{}, err
-	}
-
 	err = db.CreateUser(instance.Spec.Name, password)
 	if err != nil {
 		instance.Status.Error = err.Error()
