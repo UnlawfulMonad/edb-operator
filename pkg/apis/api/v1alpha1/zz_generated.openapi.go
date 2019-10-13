@@ -357,8 +357,14 @@ func schema_pkg_apis_api_v1alpha1_MySQLGrantStatus(ref common.ReferenceCallback)
 							Format: "",
 						},
 					},
+					"error": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
 				},
-				Required: []string{"granted"},
+				Required: []string{"granted", "error"},
 			},
 		},
 	}

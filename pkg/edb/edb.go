@@ -64,8 +64,15 @@ func AddOrUpdateExternalDatabase(name string, db ExternalDB) {
 	}
 
 	externalDatabasesMutex.Lock()
+	defer externalDatabasesMutex.Unlock()
+
+	if old, ok := externalDatabases[name]; ok {
+		if err := old.Close(); err != nil {
+			logf.Log.Error(err, "failed to close old connection")
+		}
+	}
+
 	externalDatabases[name] = db
-	externalDatabasesMutex.Unlock()
 }
 
 // RemoveExternalDatabase closes a connection and deregisters an
@@ -74,6 +81,7 @@ func RemoveExternalDatabase(name string) {
 	externalDatabasesMutex.Lock()
 	defer externalDatabasesMutex.Unlock()
 
+	// Only delete if it actually exists
 	value, ok := externalDatabases[name]
 	if ok {
 		if err := value.Close(); err != nil {

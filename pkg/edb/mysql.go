@@ -65,9 +65,8 @@ func (c *mySQLConn) Grant(permission, to, on string) error {
 	return nil
 }
 
-func (c *mySQLConn) listUsers() ([]string, error) {
-	users := make([]string, 0)
-
+// ListUsers does exactly what it says on the tin
+func (c *mySQLConn) ListUsers() ([]string, error) {
 	rows, err := c.conn.Query("SELECT User FROM mysql.user")
 	if err != nil {
 		return nil, err
@@ -75,6 +74,7 @@ func (c *mySQLConn) listUsers() ([]string, error) {
 
 	defer rows.Close()
 
+	users := make([]string, 0, 16)
 	var name string
 	for rows.Next() {
 		err = rows.Scan(&name)
@@ -94,7 +94,7 @@ func (c *mySQLConn) CreateUser(user, password string) error {
 		return ErrInvalidName
 	}
 
-	users, err := c.listUsers()
+	users, err := c.ListUsers()
 	if err != nil {
 		return err
 	}

@@ -95,6 +95,9 @@ func (r *ReconcileMySQLGrant) Reconcile(request reconcile.Request) (reconcile.Re
 	permission := instance.Spec.Permission
 	if !isValidGrant(permission) {
 		reqLogger.Error(edb.ErrUnsupportedPermission, "provided permission was invalid")
+		instance.Status.Granted = false
+		instance.Status.Error = "provided permission is invalid"
+		r.client.Status().Update(context.TODO(), instance)
 		return reconcile.Result{}, edb.ErrUnsupportedPermission
 	}
 
@@ -108,6 +111,7 @@ func (r *ReconcileMySQLGrant) Reconcile(request reconcile.Request) (reconcile.Re
 	}
 
 	instance.Status.Granted = true
+	instance.Status.Error = ""
 	r.client.Status().Update(context.TODO(), instance)
 
 	return reconcile.Result{}, nil

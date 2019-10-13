@@ -45,9 +45,12 @@ spec:
         status:
           description: MySQLGrantStatus defines the observed state of MySQLGrant
           properties:
+            error:
+              type: string
             granted:
               type: boolean
           required:
+          - error
           - granted
           type: object
       type: object

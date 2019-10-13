@@ -17,6 +17,7 @@ type MySQLGrantSpec struct {
 // +k8s:openapi-gen=true
 type MySQLGrantStatus struct {
 	Granted bool `json:"granted"`
+	Error string `json:"error"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
