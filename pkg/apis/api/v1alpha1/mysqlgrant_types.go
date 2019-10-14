@@ -7,8 +7,8 @@ import (
 // MySQLGrantSpec defines the desired state of MySQLGrant
 // +k8s:openapi-gen=true
 type MySQLGrantSpec struct {
-	To string `json:"to"`
-	On string `json:"on"`
+	User     string `json:"user"`
+	Database string `json:"database"`
 
 	Permission string `json:"permission"`
 }
@@ -16,8 +16,8 @@ type MySQLGrantSpec struct {
 // MySQLGrantStatus defines the observed state of MySQLGrant
 // +k8s:openapi-gen=true
 type MySQLGrantStatus struct {
-	Granted bool `json:"granted"`
-	Error string `json:"error"`
+	Granted bool   `json:"granted"`
+	Error   string `json:"error"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

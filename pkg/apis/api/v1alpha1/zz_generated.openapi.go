@@ -319,13 +319,13 @@ func schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref common.ReferenceCallback) c
 				Description: "MySQLGrantSpec defines the desired state of MySQLGrant",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"to": {
+					"user": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
 							Format: "",
 						},
 					},
-					"on": {
+					"database": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
 							Format: "",
@@ -338,7 +338,7 @@ func schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"to", "on", "permission"},
+				Required: []string{"user", "database", "permission"},
 			},
 		},
 	}

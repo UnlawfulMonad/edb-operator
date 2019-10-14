@@ -31,16 +31,16 @@ spec:
         spec:
           description: MySQLGrantSpec defines the desired state of MySQLGrant
           properties:
-            "on":
+            database:
               type: string
             permission:
               type: string
-            to:
+            user:
               type: string
           required:
-          - "on"
+          - database
           - permission
-          - to
+          - user
           type: object
         status:
           description: MySQLGrantStatus defines the observed state of MySQLGrant
