@@ -7,8 +7,9 @@ import (
 // MySQLGrantSpec defines the desired state of MySQLGrant
 // +k8s:openapi-gen=true
 type MySQLGrantSpec struct {
-	User     string `json:"user"`
-	Database string `json:"database"`
+	User                string              `json:"user"`
+	Database            string              `json:"database"`
+	ExternalDatabaseRef ExternalDatabaseRef `json:"externalDatabaseRef"`
 
 	Permission string `json:"permission"`
 }

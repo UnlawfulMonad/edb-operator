@@ -53,7 +53,7 @@ func (c *mySQLConn) Grant(permission, to, on string) error {
 		return ErrInvalidName
 	}
 
-	query := fmt.Sprintf(`GRANT %s ON %s TO %s`, permission, on, to)
+	query := fmt.Sprintf(`GRANT %s ON %s.* TO %s`, permission, on, to)
 
 	_, err := c.conn.Exec(query)
 	if err != nil {

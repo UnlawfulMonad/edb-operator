@@ -3,6 +3,7 @@ package mysqlgrant
 import (
 	"context"
 	"strings"
+	"time"
 
 	apiv1alpha1 "github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1"
 	"github.com/UnlawfulMonad/edb-operator/pkg/edb"
@@ -104,8 +105,12 @@ func (r *ReconcileMySQLGrant) Reconcile(request reconcile.Request) (reconcile.Re
 	// TODO
 	// Ensure the database and user are created (and in the same namespace)
 
-	database := edb.LookupExternalDatabase(instance.Spec.On)
-	err = database.Grant(instance.Spec.Permission, instance.Spec.To, instance.Spec.On)
+	database := edb.LookupExternalDatabase(instance.Spec.ExternalDatabaseRef.Name)
+	if database == nil {
+		return reconcile.Result{RequeueAfter: time.Second}, nil
+	}
+
+	err = database.Grant(instance.Spec.Permission, instance.Spec.Database, instance.Spec.User)
 	if err != nil {
 		return reconcile.Result{}, err
 	}

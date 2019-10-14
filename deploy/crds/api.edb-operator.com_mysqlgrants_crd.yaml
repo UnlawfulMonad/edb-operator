@@ -33,12 +33,19 @@ spec:
           properties:
             database:
               type: string
+            externalDatabaseRef:
+              description: ExternalDatabaseRef talks about an external database.
+              properties:
+                name:
+                  type: string
+              type: object
             permission:
               type: string
             user:
               type: string
           required:
           - database
+          - externalDatabaseRef
           - permission
           - user
           type: object

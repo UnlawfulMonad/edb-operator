@@ -331,6 +331,11 @@ func schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref common.ReferenceCallback) c
 							Format: "",
 						},
 					},
+					"externalDatabaseRef": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"),
+						},
+					},
 					"permission": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
@@ -338,9 +343,11 @@ func schema_pkg_apis_api_v1alpha1_MySQLGrantSpec(ref common.ReferenceCallback) c
 						},
 					},
 				},
-				Required: []string{"user", "database", "permission"},
+				Required: []string{"user", "database", "externalDatabaseRef", "permission"},
 			},
 		},
+		Dependencies: []string{
+			"github.com/UnlawfulMonad/edb-operator/pkg/apis/api/v1alpha1.ExternalDatabaseRef"},
 	}
 }
 
