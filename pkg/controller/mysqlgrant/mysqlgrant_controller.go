@@ -107,7 +107,7 @@ func (r *ReconcileMySQLGrant) Reconcile(request reconcile.Request) (reconcile.Re
 
 	database := edb.LookupExternalDatabase(instance.Spec.ExternalDatabaseRef.Name)
 	if database == nil {
-		return reconcile.Result{RequeueAfter: time.Second}, nil
+		return reconcile.Result{RequeueAfter: time.Second * 5}, nil
 	}
 
 	err = database.Grant(instance.Spec.Permission, instance.Spec.Database, instance.Spec.User)
