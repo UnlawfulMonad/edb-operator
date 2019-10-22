@@ -15,6 +15,9 @@ spec:
         name: edb-operator
     spec:
       serviceAccountName: edb-operator
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
       containers:
         - name: edb-operator
           image: unlawfulmonad/edb-operator:latest
